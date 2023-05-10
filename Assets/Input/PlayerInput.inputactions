@@ -40,6 +40,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "AlternativeAction",
+                    "type": "Button",
+                    "id": "2da33eab-0dcd-4111-9c47-944e6c30b1e7",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -111,7 +120,18 @@
                 },
                 {
                     "name": "",
-                    "id": "0c2f0e63-355c-46b5-b0fd-14462735d7c9",
+                    "id": "5534b7a7-aba1-43bb-a310-4162ba5e3da6",
+                    "path": "<Mouse>/scroll/y",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "CameraZoom",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "2315c755-598f-4a3f-bfcb-e5963f920d32",
                     "path": "<Mouse>/rightButton",
                     "interactions": "",
                     "processors": "",
@@ -122,12 +142,12 @@
                 },
                 {
                     "name": "",
-                    "id": "5534b7a7-aba1-43bb-a310-4162ba5e3da6",
-                    "path": "<Mouse>/scroll/y",
+                    "id": "e9b784cc-4681-4198-abbe-a0ac3b7e71c6",
+                    "path": "<Keyboard>/shift",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "CameraZoom",
+                    "action": "AlternativeAction",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

@@ -9,6 +9,7 @@ namespace Mandragora.UnitBased
         public event Action OnSelectedUnitChanged;
         
         [SerializeField] private LayerMask _unitLayerMask;
+        [SerializeField] private LayerMask _groundLayerMask;
        
         private Camera _camera;
         private Unit _selectedUnit;
@@ -22,6 +23,8 @@ namespace Mandragora.UnitBased
                 OnSelectedUnitChanged?.Invoke();
             }
         }
+        
+        public bool IsAlternativeAction { get; set; }
 
         private void Awake()
         {
@@ -38,6 +41,15 @@ namespace Mandragora.UnitBased
             if (SelectedUnit == unit) return;
 
             SelectedUnit = unit;
+        }
+
+        public void HandleCommand(Vector3 mouseScreenPosition)
+        {
+            if (SelectedUnit == null) return;
+            var ray = _camera.ScreenPointToRay(mouseScreenPosition);
+            
+            if (!Physics.Raycast(ray, out RaycastHit groundHit, float.MaxValue, _groundLayerMask)) return;
+            SelectedUnit.Move(groundHit.point, IsAlternativeAction);
         }
     }
 }

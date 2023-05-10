@@ -23,7 +23,14 @@ namespace Mandragora.Input
 
         public void OnCommand(InputAction.CallbackContext context)
         {
-            Debug.Log("Command");
+            if (context.started)
+                UnitActionSystem.Instance.HandleCommand(Mouse.current.position.ReadValue());
+        }
+
+        public void OnAlternativeAction(InputAction.CallbackContext context)
+        {
+            if (context.started) UnitActionSystem.Instance.IsAlternativeAction = true;
+            if (context.canceled) UnitActionSystem.Instance.IsAlternativeAction = false;
         }
     }
 }
