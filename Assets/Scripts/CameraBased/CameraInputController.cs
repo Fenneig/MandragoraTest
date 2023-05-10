@@ -1,7 +1,7 @@
 using Cinemachine;
 using UnityEngine;
 
-namespace Mandragora.Camera
+namespace Mandragora.CameraBased
 {
     public class CameraInputController : MonoBehaviour
     {

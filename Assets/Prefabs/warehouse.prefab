@@ -141,6 +141,7 @@ GameObject:
   - component: {fileID: 3772153254149417324}
   - component: {fileID: 285621180732794569}
   - component: {fileID: 2599225399224766979}
+  - component: {fileID: 5580985536031730565}
   m_Layer: 0
   m_Name: warehouse
   m_TagString: Untagged
@@ -217,6 +218,19 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &5580985536031730565
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4544890457348944854}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 6.8323355, y: 4.1118035, z: 8.300519}
+  m_Center: {x: 0, y: 0, z: 0.0000009536743}
 --- !u!1001 &7887326285970867096
 PrefabInstance:
   m_ObjectHideFlags: 0

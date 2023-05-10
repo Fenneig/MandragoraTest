@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 2019036928963852138}
   - component: {fileID: 3146561446947993807}
   - component: {fileID: 886685480275856389}
+  - component: {fileID: 3128817814732672325}
   m_Layer: 0
   m_Name: Manifactury
   m_TagString: Untagged
@@ -88,6 +89,19 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &3128817814732672325
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1679525791776992720}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 10.000018, y: 3.1, z: 7.6725225}
+  m_Center: {x: 0, y: 0, z: -0.00000059604656}
 --- !u!1 &4562693731938431350
 GameObject:
   m_ObjectHideFlags: 0

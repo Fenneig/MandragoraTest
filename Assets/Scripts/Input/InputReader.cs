@@ -1,4 +1,5 @@
-﻿using Mandragora.Camera;
+﻿using Mandragora.CameraBased;
+using Mandragora.UnitBased;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -16,7 +17,8 @@ namespace Mandragora.Input
 
         public void OnSelect(InputAction.CallbackContext context)
         {
-            Debug.Log("Select");
+            if (context.started)
+                UnitActionSystem.Instance.HandleUnitSelection(Mouse.current.position.ReadValue());
         }
 
         public void OnCommand(InputAction.CallbackContext context)
