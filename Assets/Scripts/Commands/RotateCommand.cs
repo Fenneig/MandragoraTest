@@ -14,16 +14,16 @@ namespace Mandragora.Commands
             _direction = direction;
         }
 
-        protected override void StartCommandExecution()
+        public override void StartCommandExecution()
         {
             _unitRotateComponent.OnNavMeshRotateReachDirection += CommandExecutionComplete;
             _unitRotateComponent.LookAt(_direction);
         }
 
-        protected override void CommandExecutionComplete()
+        protected override void CommandExecutionComplete(Unit unit)
         {
             _unitRotateComponent.OnNavMeshRotateReachDirection -= CommandExecutionComplete;
-            base.CommandExecutionComplete();
+            base.CommandExecutionComplete(unit);
         }
     }
 }

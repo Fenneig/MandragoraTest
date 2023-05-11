@@ -5,18 +5,26 @@ using UnityEngine;
 
 namespace Mandragora.UnitBased
 {
+    [RequireComponent(typeof(Unit))]
     public class RotateComponent : MonoBehaviour
     {
         [SerializeField] private float _rotateSpeed;
+
+        private Unit _unit;
         
-        private const float ROTATE_THRESHOLD = 3f;
+        private const float ROTATE_THRESHOLD = 5f;
         
-        public event Action OnNavMeshRotateReachDirection;
+        public event Action<Unit> OnNavMeshRotateReachDirection;
+
+        private void Awake()
+        {
+            _unit = GetComponent<Unit>();
+        }
 
         public void Rotate(Vector3 direction, bool isQueueCommand)
         {
-            if (isQueueCommand) new RotateCommand(this, direction).AddToQueue();
-            else new RotateCommand(this, direction).StartNewQueue();
+            if (isQueueCommand) new RotateCommand(this, direction).AddToQueue(_unit);
+            else new RotateCommand(this, direction).StartNewQueue(_unit);
         }
         
         public void LookAt(Vector3 direction)
@@ -26,15 +34,16 @@ namespace Mandragora.UnitBased
 
         private IEnumerator LookRoutine(Vector3 direction)
         {
-            Quaternion lookTo = Quaternion.LookRotation(direction - transform.position);
+            Quaternion lookAt = Quaternion.LookRotation(direction - transform.position);
             
-            while (Mathf.Abs(transform.eulerAngles.y - lookTo.eulerAngles.y) > ROTATE_THRESHOLD)
+            while (Mathf.Abs(transform.eulerAngles.y - lookAt.eulerAngles.y) > ROTATE_THRESHOLD)
             {
-                transform.rotation = Quaternion.Lerp(transform.rotation, lookTo, _rotateSpeed * Time.deltaTime);
+                transform.rotation = Quaternion.Lerp(transform.rotation, lookAt, _rotateSpeed * Time.deltaTime);
                 yield return null;
             }
-            
-            OnNavMeshRotateReachDirection?.Invoke();
+
+            transform.LookAt(direction);
+            OnNavMeshRotateReachDirection?.Invoke(_unit);
         }
     }
 }

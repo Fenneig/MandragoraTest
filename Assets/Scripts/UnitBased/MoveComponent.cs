@@ -11,7 +11,7 @@ namespace Mandragora.UnitBased
 
         private Unit _unit;
         
-        public event Action OnNavMeshReachDestination;
+        public event Action<Unit> OnNavMeshReachDestination;
 
         private void Awake()
         {
@@ -29,13 +29,13 @@ namespace Mandragora.UnitBased
             if (_unit.Agent.pathPending) return;
             if (_unit.Agent.remainingDistance > _unit.Agent.stoppingDistance) return;
             if (_unit.Agent.hasPath && _unit.Agent.velocity.sqrMagnitude != 0f) return;
-            OnNavMeshReachDestination?.Invoke();
+            OnNavMeshReachDestination?.Invoke(_unit);
         }
 
         public void Move(Vector3 destination, bool isQueueCommand)
         {
-            if (isQueueCommand) new MoveCommand(_unit, destination).AddToQueue();
-            else new MoveCommand(_unit, destination).StartNewQueue();
+            if (isQueueCommand) new MoveCommand(_unit, destination).AddToQueue(_unit);
+            else new MoveCommand(_unit, destination).StartNewQueue(_unit);
         }
     }
 }

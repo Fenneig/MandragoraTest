@@ -1,5 +1,6 @@
 ﻿using System;
 using Mandragora.UnitBased;
+using Mandragora.Utils;
 using UnityEngine;
 
 namespace Mandragora.Interactables
@@ -9,27 +10,29 @@ namespace Mandragora.Interactables
         [SerializeField] private Animator _animator;
         [SerializeField] private Transform _interactPosition;
         [SerializeField] private Transform _interactLookAtPosition;
-        private static readonly int Interact1 = Animator.StringToHash("Interact");
+        private static readonly int InteractAnimation = Animator.StringToHash("Interact");
 
-        public event Action OnInteractionCompleted;
+        private Unit _currentUnitInteractWith;
+
+        public event Action<Unit> OnInteractionCompleted;
 
         public void StartInteractSequence(Unit unit, bool isQueuedAction)
         {
+            _currentUnitInteractWith = unit;
             unit.MoveComponent.Move(_interactPosition.position, isQueuedAction);
             unit.RotateComponent.Rotate(_interactLookAtPosition.position, true);
-            unit.Interact(this, true, InteractType.TakeCargo);
+            unit.Interact(this, true);
         }
 
         public void Interact()
         {
-            _animator.SetTrigger(Interact1);
+            _animator.SetTrigger(InteractAnimation);
         }
 
         public void OnInteractionComplete()
         {
-            Debug.Log("Interaction completed!");
-            OnInteractionCompleted?.Invoke();
+            _currentUnitInteractWith.TriggerAnimation(Idents.Animations.TakeCargo);
+            OnInteractionCompleted?.Invoke(_currentUnitInteractWith);
         }
-        
     }
 }

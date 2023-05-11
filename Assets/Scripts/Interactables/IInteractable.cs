@@ -5,7 +5,7 @@ namespace Mandragora.Interactables
 {
     public interface IInteractable
     {
-        public event Action OnInteractionCompleted;
+        public event Action<Unit> OnInteractionCompleted;
         public void StartInteractSequence(Unit unit, bool isQueuedAction);
         public void Interact();
     }

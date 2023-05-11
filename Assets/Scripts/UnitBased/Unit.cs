@@ -1,4 +1,3 @@
-using System;
 using Mandragora.Commands;
 using Mandragora.Interactables;
 using UnityEngine;
@@ -11,9 +10,13 @@ namespace Mandragora.UnitBased
     [RequireComponent(typeof(RotateComponent))]
     public class Unit : MonoBehaviour
     {
+        [Header("Animator")]
+        [SerializeField] private Animator _animator;
         private NavMeshAgent _agent;
         private MoveComponent _moveComponent;
         private RotateComponent _rotateComponent;
+        private IInteractable _interactWith;
+        private bool _isQueueCommand;
         public NavMeshAgent Agent => _agent;
         public MoveComponent MoveComponent => _moveComponent;
         public RotateComponent RotateComponent => _rotateComponent;
@@ -25,16 +28,23 @@ namespace Mandragora.UnitBased
             _rotateComponent = GetComponent<RotateComponent>();
         }
 
-        public void Interact(IInteractable interactable, bool isQueueCommand, InteractType interactType)
+        public void Interact(IInteractable interactable, bool isQueueCommand)
         {
-            if (isQueueCommand) new InteractCommand(this, interactable).AddToQueue();
-            else new InteractCommand(this, interactable).StartNewQueue();
-        }
-    }
+            _interactWith = interactable;
+            _isQueueCommand = isQueueCommand;
 
-    public enum InteractType
-    {
-        DeliverCargo,
-        TakeCargo
+            CreateInteractionCommand();
+        }
+
+        public void CreateInteractionCommand()
+        {
+            if (_isQueueCommand) new InteractCommand(_interactWith).AddToQueue(this);
+            else new InteractCommand(_interactWith).StartNewQueue(this);
+        }
+
+        public void TriggerAnimation(string animationTriggerParameter)
+        {
+            _animator.SetTrigger(animationTriggerParameter);
+        }
     }
 }

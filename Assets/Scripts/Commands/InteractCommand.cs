@@ -5,25 +5,23 @@ namespace Mandragora.Commands
 {
     public class InteractCommand : BaseCommand
     {
-        private Unit _unit;
         private IInteractable _interactable;
 
-        public InteractCommand(Unit unit, IInteractable interactable)
+        public InteractCommand(IInteractable interactable)
         {
-            _unit = unit;
             _interactable = interactable;
         }
 
-        protected override void StartCommandExecution()
+        public override void StartCommandExecution()
         {
             _interactable.Interact();
             _interactable.OnInteractionCompleted += CommandExecutionComplete;
         }
 
-        protected override void CommandExecutionComplete()
+        protected override void CommandExecutionComplete(Unit unit)
         {
             _interactable.OnInteractionCompleted -= CommandExecutionComplete;
-            base.CommandExecutionComplete();
+            base.CommandExecutionComplete(unit);
         }
     }
 }

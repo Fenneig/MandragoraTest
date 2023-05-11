@@ -1,38 +1,56 @@
 ﻿using System.Collections.Generic;
-using UnityEngine;
+using Mandragora.UnitBased;
 
 namespace Mandragora.Commands
 {
     public abstract class BaseCommand
     {
-        protected static Queue<BaseCommand> CommandsQueue = new Queue<BaseCommand>();
-        protected static bool PlayingQueue { get; private set; }
+        protected static Dictionary<Unit, Queue<BaseCommand>> CommandsQueue = new Dictionary<Unit, Queue<BaseCommand>>();
 
-        public void AddToQueue()
+        public void AddToQueue(Unit unit)
         {
-            CommandsQueue.Enqueue(this);
-            if (!PlayingQueue) PlayCommandFromQueue();
+            if (CommandsQueue.TryGetValue(unit, out var queue))
+            {
+                queue.Enqueue(this);
+            }
+            else
+            {
+                var newQueue = new Queue<BaseCommand>();
+                CommandsQueue.Add(unit, newQueue);
+                newQueue.Enqueue(this);
+            }
         }
 
-        protected virtual void StartCommandExecution(){}
+        public virtual void StartCommandExecution(){}
 
-        public void StartNewQueue()
+        public void StartNewQueue(Unit unit)
         {
-            CommandsQueue = new Queue<BaseCommand>();
-            CommandsQueue.Enqueue(this);
-            PlayCommandFromQueue();
+            if (CommandsQueue.TryGetValue(unit, out var queue))
+            {
+                queue.Clear();
+                queue.Enqueue(this);
+            }
+            else
+            {
+                var newQueue = new Queue<BaseCommand>();
+                CommandsQueue.Add(unit, newQueue);
+                newQueue.Enqueue(this);
+            }
+            PlayCommandFromQueue(unit);
         }
 
-        protected virtual void CommandExecutionComplete()
+        protected virtual void CommandExecutionComplete(Unit unit)
         {
-            if (CommandsQueue.Count > 0) PlayCommandFromQueue();
-            else PlayingQueue = false;
+            if (!CommandsQueue.TryGetValue(unit, out var queue)) return;
+            if (queue.Count > 0) PlayCommandFromQueue(unit);
         }
 
-        private static void PlayCommandFromQueue()
+        private static void PlayCommandFromQueue(Unit unit)
         {
-            PlayingQueue = true;
-            CommandsQueue.Dequeue().StartCommandExecution();
+            if (CommandsQueue.TryGetValue(unit, out var queue))
+            {
+                queue.Dequeue().StartCommandExecution();
+            }
         }
     }
 }

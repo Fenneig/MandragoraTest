@@ -10,13 +10,13 @@ namespace Mandragora.Interactables
         [SerializeField] private Transform _interactPosition;
         [SerializeField] private Transform _interactLookAtPosition;
         
-        public event Action OnInteractionCompleted;
+        public event Action<Unit> OnInteractionCompleted;
 
         public void StartInteractSequence(Unit unit, bool isQueuedAction)
         {
             unit.MoveComponent.Move(_interactPosition.position, isQueuedAction);
             unit.RotateComponent.Rotate(_interactLookAtPosition.position, true);
-            unit.Interact(this, true, InteractType.DeliverCargo);
+            unit.Interact(this, true);
         }
 
         public void Interact()

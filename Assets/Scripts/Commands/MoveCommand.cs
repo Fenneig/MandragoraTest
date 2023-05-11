@@ -14,18 +14,18 @@ namespace Mandragora.Commands
             _destination = destination;
         }
 
-        protected override void StartCommandExecution()
+        public override void StartCommandExecution()
         {
             _unit.MoveComponent.IsAgentHavePath = true;
             _unit.MoveComponent.OnNavMeshReachDestination += CommandExecutionComplete;
             _unit.Agent.SetDestination(_destination);
         }
 
-        protected override void CommandExecutionComplete()
+        protected override void CommandExecutionComplete(Unit unit)
         {
             _unit.MoveComponent.IsAgentHavePath = CommandsQueue.Count > 0;
             _unit.MoveComponent.OnNavMeshReachDestination -= CommandExecutionComplete;
-            base.CommandExecutionComplete();
+            base.CommandExecutionComplete(unit);
         }
     }
 }
