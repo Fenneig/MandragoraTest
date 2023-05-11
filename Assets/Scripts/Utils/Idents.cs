@@ -6,6 +6,7 @@
         {
             public static string TakeCargo = "Take";
             public static string DeliverCargo = "Deliver";
+            public static string Interact = "Interact";
         }
     }
 }

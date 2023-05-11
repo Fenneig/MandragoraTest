@@ -1,3 +1,4 @@
+using System;
 using Mandragora.Commands;
 using Mandragora.Interactables;
 using UnityEngine;
@@ -20,6 +21,8 @@ namespace Mandragora.UnitBased
         public NavMeshAgent Agent => _agent;
         public MoveComponent MoveComponent => _moveComponent;
         public RotateComponent RotateComponent => _rotateComponent;
+
+        public event Action OnAnimationComplete;
 
         private void Awake()
         {
@@ -45,6 +48,11 @@ namespace Mandragora.UnitBased
         public void TriggerAnimation(string animationTriggerParameter)
         {
             _animator.SetTrigger(animationTriggerParameter);
+        }
+
+        private void AnimationComplete()
+        {
+            OnAnimationComplete?.Invoke();
         }
     }
 }

@@ -10,7 +10,6 @@ namespace Mandragora.Interactables
         [SerializeField] private Animator _animator;
         [SerializeField] private Transform _interactPosition;
         [SerializeField] private Transform _interactLookAtPosition;
-        private static readonly int InteractAnimation = Animator.StringToHash("Interact");
 
         private Unit _currentUnitInteractWith;
 
@@ -26,7 +25,7 @@ namespace Mandragora.Interactables
 
         public void Interact()
         {
-            _animator.SetTrigger(InteractAnimation);
+            _animator.SetTrigger(Idents.Animations.Interact);
         }
 
         public void OnInteractionComplete()
