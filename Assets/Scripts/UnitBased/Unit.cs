@@ -1,37 +1,40 @@
 using System;
 using Mandragora.Commands;
+using Mandragora.Interactables;
 using UnityEngine;
 using UnityEngine.AI;
 
 namespace Mandragora.UnitBased
 {
+    [RequireComponent(typeof(NavMeshAgent))]
+    [RequireComponent(typeof(MoveComponent))]
+    [RequireComponent(typeof(RotateComponent))]
     public class Unit : MonoBehaviour
     {
-        [SerializeField] private NavMeshAgent _agent;
+        private NavMeshAgent _agent;
+        private MoveComponent _moveComponent;
+        private RotateComponent _rotateComponent;
         public NavMeshAgent Agent => _agent;
+        public MoveComponent MoveComponent => _moveComponent;
+        public RotateComponent RotateComponent => _rotateComponent;
 
-        public event Action OnNavMeshReachDestination;
-
-        public bool IsAgentHavePath { get; set; }
-
-        private void Update()
+        private void Awake()
         {
-            CheckAgentDestination();
+            _agent = GetComponent<NavMeshAgent>();
+            _moveComponent = GetComponent<MoveComponent>();
+            _rotateComponent = GetComponent<RotateComponent>();
         }
 
-        private void CheckAgentDestination()
+        public void Interact(IInteractable interactable, bool isQueueCommand, InteractType interactType)
         {
-            if (!IsAgentHavePath) return;
-            if (_agent.pathPending) return;
-            if (_agent.remainingDistance > _agent.stoppingDistance) return;
-            if (_agent.hasPath && _agent.velocity.sqrMagnitude != 0f) return;
-            OnNavMeshReachDestination?.Invoke();
+            if (isQueueCommand) new InteractCommand(this, interactable).AddToQueue();
+            else new InteractCommand(this, interactable).StartNewQueue();
         }
+    }
 
-        public void Move(Vector3 destination, bool isQueueCommand)
-        {
-            if (isQueueCommand) new MoveCommand(this, destination).AddToQueue();
-            else new MoveCommand(this, destination).StartNewQueue();
-        }
+    public enum InteractType
+    {
+        DeliverCargo,
+        TakeCargo
     }
 }

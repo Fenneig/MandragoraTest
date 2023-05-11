@@ -10,8 +10,10 @@ GameObject:
   m_Component:
   - component: {fileID: 2467838777399915011}
   - component: {fileID: 8486979398746625805}
-  - component: {fileID: 6536272012261999362}
   - component: {fileID: 9713233902218794}
+  - component: {fileID: 6536272012261999362}
+  - component: {fileID: 7490430351525984842}
+  - component: {fileID: 7102891637691863064}
   m_Layer: 6
   m_Name: Bot
   m_TagString: Untagged
@@ -51,19 +53,6 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 2.868506, y: 1.8596827, z: 1.8000109}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &6536272012261999362
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2987108000363931833}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7e0bc80d3b7244b099757b7b8ff11278, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _agent: {fileID: 9713233902218794}
 --- !u!195 &9713233902218794
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -86,6 +75,43 @@ NavMeshAgent:
   m_BaseOffset: 0.92984134
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
+--- !u!114 &6536272012261999362
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2987108000363931833}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7e0bc80d3b7244b099757b7b8ff11278, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &7490430351525984842
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2987108000363931833}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 579796d5ca8b450aa9c218432ae280cb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &7102891637691863064
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2987108000363931833}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0ad032daf0f846c098463742dd990dda, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _rotateSpeed: 3
 --- !u!1 &5211658727848545141
 GameObject:
   m_ObjectHideFlags: 0
@@ -103,7 +129,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &2353638346269411340
 Transform:
   m_ObjectHideFlags: 0

@@ -1,4 +1,5 @@
 ﻿using System;
+using Mandragora.Interactables;
 using UnityEngine;
 
 namespace Mandragora.UnitBased
@@ -10,6 +11,8 @@ namespace Mandragora.UnitBased
         
         [SerializeField] private LayerMask _unitLayerMask;
         [SerializeField] private LayerMask _groundLayerMask;
+        [SerializeField] private LayerMask _interactableLayerMask;
+
        
         private Camera _camera;
         private Unit _selectedUnit;
@@ -47,9 +50,15 @@ namespace Mandragora.UnitBased
         {
             if (SelectedUnit == null) return;
             var ray = _camera.ScreenPointToRay(mouseScreenPosition);
+           
+            if (Physics.Raycast(ray, out RaycastHit interactableHit, float.MaxValue, _interactableLayerMask))
+            {
+                interactableHit.collider.GetComponent<IInteractable>().StartInteractSequence(SelectedUnit, IsAlternativeAction);
+                return;
+            }
             
             if (!Physics.Raycast(ray, out RaycastHit groundHit, float.MaxValue, _groundLayerMask)) return;
-            SelectedUnit.Move(groundHit.point, IsAlternativeAction);
+            SelectedUnit.MoveComponent.Move(groundHit.point, IsAlternativeAction);
         }
     }
 }

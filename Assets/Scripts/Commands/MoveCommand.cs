@@ -14,17 +14,17 @@ namespace Mandragora.Commands
             _destination = destination;
         }
 
-        public override void StartCommandExecution()
+        protected override void StartCommandExecution()
         {
-            _unit.IsAgentHavePath = true;
-            _unit.OnNavMeshReachDestination += CommandExecutionComplete;
+            _unit.MoveComponent.IsAgentHavePath = true;
+            _unit.MoveComponent.OnNavMeshReachDestination += CommandExecutionComplete;
             _unit.Agent.SetDestination(_destination);
         }
 
-        public override void CommandExecutionComplete()
+        protected override void CommandExecutionComplete()
         {
-            _unit.IsAgentHavePath = CommandsQueue.Count > 0;
-            _unit.OnNavMeshReachDestination -= CommandExecutionComplete;
+            _unit.MoveComponent.IsAgentHavePath = CommandsQueue.Count > 0;
+            _unit.MoveComponent.OnNavMeshReachDestination -= CommandExecutionComplete;
             base.CommandExecutionComplete();
         }
     }

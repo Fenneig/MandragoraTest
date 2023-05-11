@@ -5,25 +5,25 @@ namespace Mandragora.Commands
 {
     public abstract class BaseCommand
     {
-        public static Queue<BaseCommand> CommandsQueue = new Queue<BaseCommand>();
-        public static bool PlayingQueue { get; private set; }
+        protected static Queue<BaseCommand> CommandsQueue = new Queue<BaseCommand>();
+        protected static bool PlayingQueue { get; private set; }
 
         public void AddToQueue()
         {
             CommandsQueue.Enqueue(this);
             if (!PlayingQueue) PlayCommandFromQueue();
         }
-        
-        public virtual void StartCommandExecution(){}
 
-        public virtual void StartNewQueue()
+        protected virtual void StartCommandExecution(){}
+
+        public void StartNewQueue()
         {
             CommandsQueue = new Queue<BaseCommand>();
             CommandsQueue.Enqueue(this);
             PlayCommandFromQueue();
         }
-        
-        public virtual void CommandExecutionComplete()
+
+        protected virtual void CommandExecutionComplete()
         {
             if (CommandsQueue.Count > 0) PlayCommandFromQueue();
             else PlayingQueue = false;
@@ -31,7 +31,6 @@ namespace Mandragora.Commands
 
         private static void PlayCommandFromQueue()
         {
-            Debug.Log("Start new command");
             PlayingQueue = true;
             CommandsQueue.Dequeue().StartCommandExecution();
         }
