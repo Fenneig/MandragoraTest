@@ -121,7 +121,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _animator: {fileID: 5871388051977500522}
-  _cargo: {fileID: 5211658727848545141}
 --- !u!114 &7490430351525984842
 MonoBehaviour:
   m_ObjectHideFlags: 0

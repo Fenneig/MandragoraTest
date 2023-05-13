@@ -23,8 +23,9 @@ namespace Mandragora.UnitBased
 
         public void Rotate(Vector3 direction, bool isQueueCommand)
         {
-            if (isQueueCommand) new RotateCommand(this, direction).AddToQueue(_unit);
-            else new RotateCommand(this, direction).StartNewQueue(_unit);
+            var command = new RotateCommand(this, direction);
+            if (isQueueCommand) command.AddToQueue(_unit);
+            else command.StartNewQueue(_unit);
         }
         
         public void LookAt(Vector3 direction)

@@ -23,7 +23,6 @@ namespace Mandragora.Commands
 
         protected override void CommandExecutionComplete(Unit unit)
         {
-            _unit.MoveComponent.IsAgentHavePath = CommandsQueue.Count > 0;
             _unit.MoveComponent.OnNavMeshReachDestination -= CommandExecutionComplete;
             base.CommandExecutionComplete(unit);
         }

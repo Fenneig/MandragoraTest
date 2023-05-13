@@ -21,7 +21,7 @@ namespace Mandragora.UnitBased
         public NavMeshAgent Agent => _agent;
         public MoveComponent MoveComponent => _moveComponent;
         public RotateComponent RotateComponent => _rotateComponent;
-
+        public bool IsBusy { get; set; }
         public event Action OnAnimationComplete;
 
         private void Awake()
@@ -41,8 +41,9 @@ namespace Mandragora.UnitBased
 
         public void CreateInteractionCommand()
         {
-            if (_isQueueCommand) new InteractCommand(_interactWith).AddToQueue(this);
-            else new InteractCommand(_interactWith).StartNewQueue(this);
+            var command = new InteractCommand(_interactWith);
+            if (_isQueueCommand) command.AddToQueue(this);
+            else command.StartNewQueue(this);
         }
 
         public void TriggerAnimation(string animationTriggerParameter)

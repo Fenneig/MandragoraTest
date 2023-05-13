@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using Mandragora.Commands;
 using Mandragora.UnitBased;
 using Mandragora.Utils;
 using UnityEngine;
@@ -10,17 +13,34 @@ namespace Mandragora.Interactables
         [SerializeField] private Animator _animator;
         [SerializeField] private Transform _interactPosition;
         [SerializeField] private Transform _interactLookAtPosition;
+        [SerializeField] private Transform _queueDirection;
+        [SerializeField] private Transform _exitPosition;
 
-        private Unit _currentUnitInteractWith;
+        private Queue<Unit> _unitsQueue = new Queue<Unit>();
 
         public event Action<Unit> OnInteractionCompleted;
 
+        private void Start()
+        {
+            BaseCommand.OnAnyActionCanceled += UpdateQueue;
+        }
+
+        private void UpdateQueue(Unit unit)
+        {
+            if (!_unitsQueue.Contains(unit)) return;
+
+            _unitsQueue = new Queue<Unit>(_unitsQueue.Where(excludedUnit => excludedUnit != unit));
+            QueueCommand.OnAnyQueueChanged?.Invoke();
+        }
+
         public void StartInteractSequence(Unit unit, bool isQueuedAction)
         {
-            _currentUnitInteractWith = unit;
-            unit.MoveComponent.Move(_interactPosition.position, isQueuedAction);
+            if (_unitsQueue.Contains(unit) && !isQueuedAction) return;
+            _unitsQueue.Enqueue(unit);
+            new QueueCommand(unit, _unitsQueue, _interactPosition.position, _queueDirection.position).AddToQueue(unit);
             unit.RotateComponent.Rotate(_interactLookAtPosition.position, true);
             unit.Interact(this, true);
+            unit.MoveComponent.Move(_exitPosition.position, true);
         }
 
         public void Interact()
@@ -30,8 +50,15 @@ namespace Mandragora.Interactables
 
         public void OnInteractionComplete()
         {
-            _currentUnitInteractWith.TriggerAnimation(Idents.Animations.TakeCargo);
-            OnInteractionCompleted?.Invoke(_currentUnitInteractWith);
+            var unit = _unitsQueue.Dequeue();
+            QueueCommand.OnAnyQueueChanged?.Invoke();
+            unit.TriggerAnimation(Idents.Animations.TakeCargo);
+            OnInteractionCompleted?.Invoke(unit);
+        }
+
+        private void OnDestroy()
+        {
+            BaseCommand.OnAnyActionCanceled -= UpdateQueue;
         }
     }
 }
