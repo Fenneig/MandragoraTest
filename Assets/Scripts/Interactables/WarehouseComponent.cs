@@ -30,7 +30,7 @@ namespace Mandragora.Interactables
             if (!_unitsQueue.Contains(unit)) return;
 
             _unitsQueue = new Queue<Unit>(_unitsQueue.Where(excludedUnit => excludedUnit != unit));
-            QueueCommand.OnAnyQueueChanged?.Invoke();
+            QueueCommand.OnAnyQueueChanged?.Invoke(_unitsQueue);
         }
 
         public void StartInteractSequence(Unit unit, bool isQueuedAction)
@@ -40,7 +40,7 @@ namespace Mandragora.Interactables
             new QueueCommand(unit, _unitsQueue, _interactPosition.position, _queueDirection.position).AddToQueue(unit);
             unit.RotateComponent.Rotate(_interactLookAtPosition.position, true);
             unit.Interact(this, true);
-            unit.MoveComponent.Move(_exitPosition.position, true);
+            if (!isQueuedAction) unit.MoveComponent.Move(_exitPosition.position, true);
         }
 
         public void Interact()
@@ -51,7 +51,7 @@ namespace Mandragora.Interactables
         public void OnInteractionComplete()
         {
             var unit = _unitsQueue.Dequeue();
-            QueueCommand.OnAnyQueueChanged?.Invoke();
+            QueueCommand.OnAnyQueueChanged?.Invoke(_unitsQueue);
             unit.TriggerAnimation(Idents.Animations.TakeCargo);
             OnInteractionCompleted?.Invoke(unit);
         }

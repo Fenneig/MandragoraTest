@@ -12,7 +12,7 @@ namespace Mandragora.UnitBased
 
         private Unit _unit;
         
-        private const float ROTATE_THRESHOLD = 5f;
+        private const float ROTATE_THRESHOLD = 2f;
         
         public event Action<Unit> OnNavMeshRotateReachDirection;
 
@@ -37,9 +37,10 @@ namespace Mandragora.UnitBased
         {
             Quaternion lookAt = Quaternion.LookRotation(direction - transform.position);
             
-            while (Mathf.Abs(transform.eulerAngles.y - lookAt.eulerAngles.y) > ROTATE_THRESHOLD)
+            while (Mathf.Abs(transform.eulerAngles.y - lookAt.eulerAngles.y) > ROTATE_THRESHOLD &&
+                   Mathf.Abs(transform.eulerAngles.y - lookAt.eulerAngles.y) - 360 <= -ROTATE_THRESHOLD)
             {
-                transform.rotation = Quaternion.Lerp(transform.rotation, lookAt, _rotateSpeed * Time.deltaTime);
+                transform.rotation = Quaternion.Slerp(transform.rotation, lookAt, _rotateSpeed * Time.deltaTime);
                 yield return null;
             }
 

@@ -14,7 +14,7 @@ namespace Mandragora.Commands
         private Vector3 _queueDirection;
         private int _queuePosition;
         
-        public static Action OnAnyQueueChanged;
+        public static Action<Queue<Unit>> OnAnyQueueChanged;
 
         public QueueCommand(Unit unit, Queue<Unit> queue, Vector3 firstInQueuePosition, Vector3 queueDirection)
         {
@@ -23,7 +23,13 @@ namespace Mandragora.Commands
             _firstInQueuePosition = firstInQueuePosition;
             _queueDirection = queueDirection - firstInQueuePosition;
             _unit.MoveComponent.OnNavMeshReachDestination += AgentReady;
-            OnAnyQueueChanged += MoveToNewPosition;
+            OnAnyQueueChanged += UpdateQueue;
+        }
+
+        private void UpdateQueue(Queue<Unit> newQueue)
+        {
+            _unitsQueue = newQueue;
+            MoveToNewPosition();
         }
 
         private void AgentReady(Unit unit)
@@ -58,7 +64,7 @@ namespace Mandragora.Commands
         private void ClearMethodsLinks()
         {
             _unit.MoveComponent.OnNavMeshReachDestination -= AgentReady;
-            OnAnyQueueChanged -= MoveToNewPosition;
+            OnAnyQueueChanged -= UpdateQueue;
         }
 
         protected override void CommandExecutionComplete(Unit unit)
