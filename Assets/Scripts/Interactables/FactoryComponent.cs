@@ -1,43 +1,23 @@
-﻿using System;
-using Mandragora.UnitBased;
+﻿using Mandragora.Commands;
 using Mandragora.Utils;
-using UnityEngine;
 
 namespace Mandragora.Interactables
 {
-    public class FactoryComponent : MonoBehaviour, IInteractable
+    public class FactoryComponent : AbstractInteractable
     {
-        [SerializeField] private Animator _animator;
-        [SerializeField] private Transform _interactPosition;
-        [SerializeField] private Transform _interactLookAtPosition;
-
-        private Unit _currentUnitInteractWith;
-
-        public event Action<Unit> OnInteractionCompleted;
-
-        public void StartInteractSequence(Unit unit, bool isQueuedAction)
+        
+        public override void Interact()
         {
-            _currentUnitInteractWith = unit;
-            unit.MoveComponent.Move(_interactPosition.position, isQueuedAction);
-            unit.RotateComponent.Rotate(_interactLookAtPosition.position, true);
-            unit.Interact(this, true);
+            CurrentUnitInteractWith = UnitsInQueue.Dequeue();
+            QueueCommand.OnAnyQueueChanged?.Invoke(UnitsInQueue);
+            CurrentUnitInteractWith.OnUnitAnimationComplete += StartFactoryAnimation;
+            CurrentUnitInteractWith.TriggerAnimation(Idents.Animations.DeliverCargo);
         }
 
-        public void Interact()
-        {
-            _currentUnitInteractWith.OnAnimationComplete += StartAnimation;
-            _currentUnitInteractWith.TriggerAnimation(Idents.Animations.DeliverCargo);
-        }
-
-        private void StartAnimation()
+        private void StartFactoryAnimation()
         {
             _animator.SetTrigger(Idents.Animations.Interact);
-            _currentUnitInteractWith.OnAnimationComplete -= StartAnimation;
-        }
-
-        private void AnimationComplete()
-        {
-            OnInteractionCompleted?.Invoke(_currentUnitInteractWith);
+            CurrentUnitInteractWith.OnUnitAnimationComplete -= StartFactoryAnimation;
         }
     }
 }

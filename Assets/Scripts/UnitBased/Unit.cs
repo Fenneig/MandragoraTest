@@ -22,7 +22,7 @@ namespace Mandragora.UnitBased
         public MoveComponent MoveComponent => _moveComponent;
         public RotateComponent RotateComponent => _rotateComponent;
         public bool IsBusy { get; set; }
-        public event Action OnAnimationComplete;
+        public event Action OnUnitAnimationComplete;
 
         private void Awake()
         {
@@ -53,7 +53,7 @@ namespace Mandragora.UnitBased
 
         private void AnimationComplete()
         {
-            OnAnimationComplete?.Invoke();
+            OnUnitAnimationComplete?.Invoke();
         }
     }
 }
