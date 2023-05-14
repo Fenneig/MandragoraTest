@@ -13,21 +13,24 @@ namespace Mandragora.Commands
         private Vector3 _firstInQueuePosition;
         private Vector3 _queueDirection;
         private int _queuePosition;
-        
-        public static Action<Queue<Unit>> OnAnyQueueChanged;
+        private string _queueId;
 
-        public QueueCommand(Unit unit, Queue<Unit> queue, Vector3 firstInQueuePosition, Vector3 queueDirection)
+        public static Action<Queue<Unit>, string> OnAnyQueueChanged;
+
+        public QueueCommand(Unit unit, Queue<Unit> queue, Vector3 firstInQueuePosition, Vector3 queueDirection, string queueId)
         {
             _unit = unit;
             _unitsQueue = queue;
             _firstInQueuePosition = firstInQueuePosition;
             _queueDirection = queueDirection - firstInQueuePosition;
-            _unit.MoveComponent.OnNavMeshReachDestination += AgentReady;
+            _queueId = queueId;
             OnAnyQueueChanged += UpdateQueue;
         }
 
-        private void UpdateQueue(Queue<Unit> newQueue)
+        private void UpdateQueue(Queue<Unit> newQueue, string queueId)
         {
+            if (_queueId != queueId) return;
+
             _unitsQueue = newQueue;
             MoveToNewPosition();
         }
@@ -39,6 +42,7 @@ namespace Mandragora.Commands
 
         public override void StartCommandExecution()
         {
+            _unit.MoveComponent.OnNavMeshReachDestination += AgentReady;
             MoveToNewPosition();
         }
 
@@ -49,9 +53,10 @@ namespace Mandragora.Commands
                 ClearMethodsLinks();
                 return;
             }
+
             Vector3 moveToPosition = GetQueuePosition();
-            _unit.Agent.SetDestination(moveToPosition);
             _unit.MoveComponent.IsAgentHavePath = true;
+            _unit.Agent.SetDestination(moveToPosition);
         }
 
         private Vector3 GetQueuePosition()

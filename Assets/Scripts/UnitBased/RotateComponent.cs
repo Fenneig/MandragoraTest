@@ -5,7 +5,6 @@ using UnityEngine;
 
 namespace Mandragora.UnitBased
 {
-    [RequireComponent(typeof(Unit))]
     public class RotateComponent : MonoBehaviour
     {
         [SerializeField] private float _rotateSpeed;

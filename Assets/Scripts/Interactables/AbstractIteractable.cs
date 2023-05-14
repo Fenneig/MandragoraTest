@@ -17,7 +17,7 @@ namespace Mandragora.Interactables
         
         protected Queue<Unit> UnitsInQueue = new Queue<Unit>();
         protected Unit CurrentUnitInteractWith;
-        
+        protected string QueueId;
 
         public abstract string Name { get; }
         public event Action<Unit> OnInteractionCompleted;
@@ -25,6 +25,7 @@ namespace Mandragora.Interactables
         private void Start()
         {
             BaseCommand.OnAnyActionCanceled += UpdateQueue;
+            QueueId = Name + "_Id";
         }
 
         private void UpdateQueue(Unit unit)
@@ -32,18 +33,20 @@ namespace Mandragora.Interactables
             if (!UnitsInQueue.Contains(unit)) return;
 
             UnitsInQueue = new Queue<Unit>(UnitsInQueue.Where(excludedUnit => excludedUnit != unit));
-            QueueCommand.OnAnyQueueChanged?.Invoke(UnitsInQueue);
+            QueueCommand.OnAnyQueueChanged?.Invoke(UnitsInQueue, QueueId);
         }
 
         public void StartInteractSequence(Unit unit, bool isQueuedAction)
         {
             if (UnitsInQueue.Contains(unit) && !isQueuedAction) return;
-            UnitsInQueue.Enqueue(unit);
-            var command = new QueueCommand(unit, UnitsInQueue, _interactPosition.position, _queueDirection.position);
+            var tempqueue = new Queue<Unit>(UnitsInQueue);
+            tempqueue.Enqueue(unit);
+            var command = new QueueCommand(unit, tempqueue, _interactPosition.position, _queueDirection.position, QueueId);
             if (isQueuedAction) command.AddToQueue(unit);
             else command.StartNewQueue(unit);
+            UnitsInQueue = new Queue<Unit>(tempqueue);
             unit.RotateComponent.Rotate(_interactLookAtPosition.position, true);
-            unit.Interact(this, true);
+            unit.InteractComponent.Interact(this, true);
             unit.MoveComponent.Move(_exitPosition.position, true);
         }
 

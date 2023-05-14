@@ -7,6 +7,7 @@ namespace Mandragora.Commands
     {
         private Unit _unit;
         private Vector3 _destination;
+        private bool _isCommandCanceled;
 
         public MoveCommand(Unit unit, Vector3 destination)
         {
@@ -19,12 +20,20 @@ namespace Mandragora.Commands
             _unit.MoveComponent.IsAgentHavePath = true;
             _unit.MoveComponent.OnNavMeshReachDestination += CommandExecutionComplete;
             _unit.Agent.SetDestination(_destination);
+            OnAnyActionCanceled += CommandCanceled;
+        }
+
+        private void CommandCanceled(Unit _)
+        {
+            _isCommandCanceled = true;
         }
 
         protected override void CommandExecutionComplete(Unit unit)
         {
             _unit.MoveComponent.OnNavMeshReachDestination -= CommandExecutionComplete;
-            base.CommandExecutionComplete(unit);
+            OnAnyActionCanceled -= CommandCanceled;
+            if (!_isCommandCanceled) base.CommandExecutionComplete(unit);
+        }
 
         public override string ToString()
         {

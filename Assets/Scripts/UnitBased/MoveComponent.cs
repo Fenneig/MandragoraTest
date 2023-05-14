@@ -4,7 +4,6 @@ using UnityEngine;
 
 namespace Mandragora.UnitBased
 {
-    [RequireComponent(typeof(Unit))]
     public class MoveComponent : MonoBehaviour
     {
         public bool IsAgentHavePath { get; set; }
