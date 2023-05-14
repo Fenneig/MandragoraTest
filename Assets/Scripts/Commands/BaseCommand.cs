@@ -6,7 +6,8 @@ namespace Mandragora.Commands
 {
     public abstract class BaseCommand
     {
-        protected static Dictionary<Unit, Queue<BaseCommand>> CommandsQueue = new Dictionary<Unit, Queue<BaseCommand>>();
+        protected static Dictionary<Unit, Queue<BaseCommand>>
+            CommandsQueue = new Dictionary<Unit, Queue<BaseCommand>>();
 
         public static Action<Unit> OnAnyActionCanceled;
         
@@ -57,6 +58,26 @@ namespace Mandragora.Commands
             if (!CommandsQueue.TryGetValue(unit, out var queue)) return;
             queue.Dequeue().StartCommandExecution();
             unit.IsBusy = true;
+        }
+
+        public static string ToString(Unit unit)
+        {
+            string resultString = "Unit commands:\r\n";
+            if (CommandsQueue.TryGetValue(unit, out var queue))
+            {
+                foreach (var command in queue)
+                {
+                    resultString += command.ToString();
+                    resultString += "\r\n";
+                }
+            }
+
+            return resultString;
+        }
+
+        public override string ToString()
+        {
+            return "";
         }
     }
 }

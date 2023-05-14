@@ -25,6 +25,10 @@ namespace Mandragora.Commands
         {
             _unit.MoveComponent.OnNavMeshReachDestination -= CommandExecutionComplete;
             base.CommandExecutionComplete(unit);
+
+        public override string ToString()
+        {
+            return $"Moving to {_destination.ToString()}";
         }
     }
 }

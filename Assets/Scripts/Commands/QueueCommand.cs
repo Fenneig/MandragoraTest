@@ -72,5 +72,10 @@ namespace Mandragora.Commands
             ClearMethodsLinks();
             base.CommandExecutionComplete(unit);
         }
+
+        public override string ToString()
+        {
+            return $"Stay in queue. Position = {_queuePosition}";
+        }
     }
 }

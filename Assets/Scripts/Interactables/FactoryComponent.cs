@@ -5,7 +5,8 @@ namespace Mandragora.Interactables
 {
     public class FactoryComponent : AbstractInteractable
     {
-        
+        public override string Name => $"Factory {gameObject.name}";
+
         public override void Interact()
         {
             CurrentUnitInteractWith = UnitsInQueue.Dequeue();

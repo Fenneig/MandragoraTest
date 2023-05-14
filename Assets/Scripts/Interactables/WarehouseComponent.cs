@@ -5,7 +5,9 @@ namespace Mandragora.Interactables
 {
     public class WarehouseComponent : AbstractInteractable
     {
-       public override void Interact()
+        public override string Name => $"Warehouse {gameObject.name}";
+
+        public override void Interact()
         {
             _animator.SetTrigger(Idents.Animations.Interact);
         }

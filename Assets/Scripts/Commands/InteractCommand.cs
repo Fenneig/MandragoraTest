@@ -23,5 +23,10 @@ namespace Mandragora.Commands
             _interactable.OnInteractionCompleted -= CommandExecutionComplete;
             base.CommandExecutionComplete(unit);
         }
+
+        public override string ToString()
+        {
+            return $"Interact with {_interactable.Name}";
+        }
     }
 }

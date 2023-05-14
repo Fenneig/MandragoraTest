@@ -18,6 +18,8 @@ namespace Mandragora.Interactables
         protected Queue<Unit> UnitsInQueue = new Queue<Unit>();
         protected Unit CurrentUnitInteractWith;
         
+
+        public abstract string Name { get; }
         public event Action<Unit> OnInteractionCompleted;
 
         private void Start()
