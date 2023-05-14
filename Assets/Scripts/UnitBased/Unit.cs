@@ -9,6 +9,7 @@ namespace Mandragora.UnitBased
     [RequireComponent(typeof(NavMeshAgent))]
     [RequireComponent(typeof(MoveComponent))]
     [RequireComponent(typeof(RotateComponent))]
+    [RequireComponent(typeof(InteractComponent))]
     public class Unit : MonoBehaviour
     {
         [Header("Animator")]
@@ -16,11 +17,11 @@ namespace Mandragora.UnitBased
         private NavMeshAgent _agent;
         private MoveComponent _moveComponent;
         private RotateComponent _rotateComponent;
-        private IInteractable _interactWith;
-        private bool _isQueueCommand;
+        private InteractComponent _interactComponent;
         public NavMeshAgent Agent => _agent;
         public MoveComponent MoveComponent => _moveComponent;
         public RotateComponent RotateComponent => _rotateComponent;
+        public InteractComponent InteractComponent => _interactComponent;
         public bool IsBusy { get; set; }
         public event Action OnUnitAnimationComplete;
 
@@ -29,21 +30,7 @@ namespace Mandragora.UnitBased
             _agent = GetComponent<NavMeshAgent>();
             _moveComponent = GetComponent<MoveComponent>();
             _rotateComponent = GetComponent<RotateComponent>();
-        }
-
-        public void Interact(IInteractable interactable, bool isQueueCommand)
-        {
-            _interactWith = interactable;
-            _isQueueCommand = isQueueCommand;
-
-            CreateInteractionCommand();
-        }
-
-        public void CreateInteractionCommand()
-        {
-            var command = new InteractCommand(_interactWith);
-            if (_isQueueCommand) command.AddToQueue(this);
-            else command.StartNewQueue(this);
+            _interactComponent = GetComponent<InteractComponent>();
         }
 
         public void TriggerAnimation(string animationTriggerParameter)
