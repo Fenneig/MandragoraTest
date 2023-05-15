@@ -1,6 +1,4 @@
 using System;
-using Mandragora.Commands;
-using Mandragora.Interactables;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -13,7 +11,8 @@ namespace Mandragora.UnitBased
     public class Unit : MonoBehaviour
     {
         [Header("Animator")]
-        [SerializeField] private Animator _animator;
+        [SerializeField] private Animator _manipulatorAnimator;
+        [SerializeField] private Animator _visualAnimator;
         private NavMeshAgent _agent;
         private MoveComponent _moveComponent;
         private RotateComponent _rotateComponent;
@@ -33,14 +32,27 @@ namespace Mandragora.UnitBased
             _interactComponent = GetComponent<InteractComponent>();
         }
 
-        public void TriggerAnimation(string animationTriggerParameter)
+        public void TriggerAnimation(string animationTriggerParameter, AnimatorType animatorType)
         {
-            _animator.SetTrigger(animationTriggerParameter);
+            if (animatorType == AnimatorType.Manipulator) _manipulatorAnimator.SetTrigger(animationTriggerParameter);
+            else _visualAnimator.SetTrigger(animationTriggerParameter);
+        }
+
+        public void SetBoolAnimation(string animationBoolParameter, bool state, AnimatorType animatorType)
+        {
+            if (animatorType == AnimatorType.Manipulator) _visualAnimator.SetBool(animationBoolParameter, state);
+            else _visualAnimator.SetBool(animationBoolParameter, state);
         }
 
         private void AnimationComplete()
         {
             OnUnitAnimationComplete?.Invoke();
         }
+    }
+
+    public enum AnimatorType
+    {
+        Manipulator,
+        Visual
     }
 }

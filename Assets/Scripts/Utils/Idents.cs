@@ -7,6 +7,7 @@
             public static string TakeCargo = "Take";
             public static string DeliverCargo = "Deliver";
             public static string Interact = "Interact";
+            public static string Moving = "IsMoving";
         }
 
         public static class Scenes

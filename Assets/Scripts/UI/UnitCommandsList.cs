@@ -46,7 +46,6 @@ namespace Mandragora.UI
             {
                 _commandsList[i].gameObject.SetActive(true);
                 _commandsList[i].SetText(commandsString[i]);
-                Debug.Log(commandsString[i]);
             }
         }
 

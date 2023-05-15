@@ -1,5 +1,6 @@
 ﻿using System;
 using Mandragora.Commands;
+using Mandragora.Utils;
 using UnityEngine;
 
 namespace Mandragora.UnitBased
@@ -29,6 +30,7 @@ namespace Mandragora.UnitBased
             if (_unit.Agent.remainingDistance > _unit.Agent.stoppingDistance) return;
             if (_unit.Agent.hasPath && _unit.Agent.velocity.sqrMagnitude != 0f) return;
             OnNavMeshReachDestination?.Invoke(_unit);
+            _unit.SetBoolAnimation(Idents.Animations.Moving, false, AnimatorType.Visual);
         }
 
         public void Move(Vector3 destination, bool isQueueCommand)
@@ -36,6 +38,7 @@ namespace Mandragora.UnitBased
             var command = new MoveCommand(_unit, destination);
             if (isQueueCommand) command.AddToQueue(_unit);
             else command.StartNewQueue(_unit);
+            _unit.SetBoolAnimation(Idents.Animations.Moving, true, AnimatorType.Visual);
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Mandragora.Commands;
+using Mandragora.UnitBased;
 using Mandragora.Utils;
 
 namespace Mandragora.Interactables
@@ -16,7 +17,7 @@ namespace Mandragora.Interactables
         {
             CurrentUnitInteractWith = UnitsInQueue.Dequeue();
             QueueCommand.OnAnyCommandQueueChanged?.Invoke(UnitsInQueue, QueueId);
-            CurrentUnitInteractWith.TriggerAnimation(Idents.Animations.TakeCargo);
+            CurrentUnitInteractWith.TriggerAnimation(Idents.Animations.TakeCargo, AnimatorType.Manipulator);
             base.OnInteractionComplete();
         }
     }

@@ -1,4 +1,5 @@
 ﻿using Mandragora.Commands;
+using Mandragora.UnitBased;
 using Mandragora.Utils;
 
 namespace Mandragora.Interactables
@@ -12,7 +13,7 @@ namespace Mandragora.Interactables
             CurrentUnitInteractWith = UnitsInQueue.Dequeue();
             QueueCommand.OnAnyCommandQueueChanged?.Invoke(UnitsInQueue, QueueId);
             CurrentUnitInteractWith.OnUnitAnimationComplete += StartFactoryAnimation;
-            CurrentUnitInteractWith.TriggerAnimation(Idents.Animations.DeliverCargo);
+            CurrentUnitInteractWith.TriggerAnimation(Idents.Animations.DeliverCargo, AnimatorType.Manipulator);
         }
 
         private void StartFactoryAnimation()
