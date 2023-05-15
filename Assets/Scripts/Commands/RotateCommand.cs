@@ -18,6 +18,7 @@ namespace Mandragora.Commands
         {
             _unitRotateComponent.OnNavMeshRotateReachDirection += CommandExecutionComplete;
             _unitRotateComponent.LookAt(_direction);
+            base.StartCommandExecution();
         }
 
         protected override void CommandExecutionComplete(Unit unit)

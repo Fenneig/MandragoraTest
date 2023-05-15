@@ -8,5 +8,10 @@
             public static string DeliverCargo = "Deliver";
             public static string Interact = "Interact";
         }
+
+        public static class Scenes
+        {
+            public static string HudScene = "HUDScene";
+        }
     }
 }

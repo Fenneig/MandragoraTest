@@ -15,7 +15,7 @@ namespace Mandragora.Interactables
         public override void OnInteractionComplete()
         {
             CurrentUnitInteractWith = UnitsInQueue.Dequeue();
-            QueueCommand.OnAnyQueueChanged?.Invoke(UnitsInQueue, QueueId);
+            QueueCommand.OnAnyCommandQueueChanged?.Invoke(UnitsInQueue, QueueId);
             CurrentUnitInteractWith.TriggerAnimation(Idents.Animations.TakeCargo);
             base.OnInteractionComplete();
         }

@@ -33,7 +33,7 @@ namespace Mandragora.Interactables
             if (!UnitsInQueue.Contains(unit)) return;
 
             UnitsInQueue = new Queue<Unit>(UnitsInQueue.Where(excludedUnit => excludedUnit != unit));
-            QueueCommand.OnAnyQueueChanged?.Invoke(UnitsInQueue, QueueId);
+            QueueCommand.OnAnyCommandQueueChanged?.Invoke(UnitsInQueue, QueueId);
         }
 
         public void StartInteractSequence(Unit unit, bool isQueuedAction)

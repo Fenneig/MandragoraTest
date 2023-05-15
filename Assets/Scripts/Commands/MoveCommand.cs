@@ -21,6 +21,7 @@ namespace Mandragora.Commands
             _unit.MoveComponent.OnNavMeshReachDestination += CommandExecutionComplete;
             _unit.Agent.SetDestination(_destination);
             OnAnyActionCanceled += CommandCanceled;
+            base.StartCommandExecution();
         }
 
         private void CommandCanceled(Unit _)
@@ -31,6 +32,7 @@ namespace Mandragora.Commands
         protected override void CommandExecutionComplete(Unit unit)
         {
             _unit.MoveComponent.OnNavMeshReachDestination -= CommandExecutionComplete;
+            _unit.MoveComponent.IsAgentHavePath = false;
             OnAnyActionCanceled -= CommandCanceled;
             if (!_isCommandCanceled) base.CommandExecutionComplete(unit);
         }

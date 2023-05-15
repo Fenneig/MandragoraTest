@@ -16,6 +16,7 @@ namespace Mandragora.Commands
         {
             _interactable.Interact();
             _interactable.OnInteractionCompleted += CommandExecutionComplete;
+            base.StartCommandExecution();
         }
 
         protected override void CommandExecutionComplete(Unit unit)

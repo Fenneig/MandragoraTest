@@ -15,7 +15,7 @@ namespace Mandragora.Commands
         private int _queuePosition;
         private string _queueId;
 
-        public static Action<Queue<Unit>, string> OnAnyQueueChanged;
+        public static Action<Queue<Unit>, string> OnAnyCommandQueueChanged;
 
         public QueueCommand(Unit unit, Queue<Unit> queue, Vector3 firstInQueuePosition, Vector3 queueDirection, string queueId)
         {
@@ -24,7 +24,7 @@ namespace Mandragora.Commands
             _firstInQueuePosition = firstInQueuePosition;
             _queueDirection = queueDirection - firstInQueuePosition;
             _queueId = queueId;
-            OnAnyQueueChanged += UpdateQueue;
+            OnAnyCommandQueueChanged += UpdateQueue;
         }
 
         private void UpdateQueue(Queue<Unit> newQueue, string queueId)
@@ -44,6 +44,7 @@ namespace Mandragora.Commands
         {
             _unit.MoveComponent.OnNavMeshReachDestination += AgentReady;
             MoveToNewPosition();
+            base.StartCommandExecution();
         }
 
         private void MoveToNewPosition()
@@ -62,6 +63,7 @@ namespace Mandragora.Commands
         private Vector3 GetQueuePosition()
         {
             _queuePosition = _unitsQueue.ToList().IndexOf(_unit);
+            OnAnyQueueChanged?.Invoke(_unit);
             Vector3 position = _firstInQueuePosition + _queueDirection * _queuePosition;
             return position;
         }
@@ -69,7 +71,7 @@ namespace Mandragora.Commands
         private void ClearMethodsLinks()
         {
             _unit.MoveComponent.OnNavMeshReachDestination -= AgentReady;
-            OnAnyQueueChanged -= UpdateQueue;
+            OnAnyCommandQueueChanged -= UpdateQueue;
         }
 
         protected override void CommandExecutionComplete(Unit unit)
@@ -80,7 +82,7 @@ namespace Mandragora.Commands
 
         public override string ToString()
         {
-            return $"Stay in queue. Position = {_queuePosition}";
+            return _queuePosition == 0 ? "" : $"Stay in queue. Position = {_queuePosition}";
         }
     }
 }

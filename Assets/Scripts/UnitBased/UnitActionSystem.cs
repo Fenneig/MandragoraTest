@@ -4,6 +4,8 @@ using UnityEngine;
 
 namespace Mandragora.UnitBased
 {
+    //TODO: Возможно будет хорошей идеей избавиться от синглтона и заинжектить 
+    //TODO: систему в другой объект. На данный момент, думаю можно и так оставить.
     public class UnitActionSystem : MonoBehaviour
     {
         public static UnitActionSystem Instance { get; private set; }

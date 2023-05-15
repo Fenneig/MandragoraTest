@@ -1,15 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
-using Mandragora.UnitBased;
+using Unit = Mandragora.UnitBased.Unit;
 
 namespace Mandragora.Commands
 {
     public abstract class BaseCommand
     {
-        protected static Dictionary<Unit, Queue<BaseCommand>>
-            CommandsQueue = new Dictionary<Unit, Queue<BaseCommand>>();
+        protected static Dictionary<Unit, Queue<BaseCommand>> CommandsQueue = new Dictionary<Unit, Queue<BaseCommand>>();
+        private static Dictionary<Unit, BaseCommand> _currentUnitsCommand = new Dictionary<Unit, BaseCommand>();
 
         public static Action<Unit> OnAnyActionCanceled;
+        public static Action<Unit> OnAnyQueueChanged;
         
         public void AddToQueue(Unit unit)
         {
@@ -25,9 +26,11 @@ namespace Mandragora.Commands
                 newQueue.Enqueue(this);
                 PlayCommandFromQueue(unit);
             }
+
+            OnAnyQueueChanged?.Invoke(unit);
         }
 
-        public virtual void StartCommandExecution(){}
+        public virtual void StartCommandExecution() { }
 
         public void StartNewQueue(Unit unit)
         {
@@ -44,6 +47,7 @@ namespace Mandragora.Commands
                 newQueue.Enqueue(this);
             }
             PlayCommandFromQueue(unit);
+            OnAnyQueueChanged?.Invoke(unit);
         }
 
         protected virtual void CommandExecutionComplete(Unit unit)
@@ -56,13 +60,20 @@ namespace Mandragora.Commands
         private static void PlayCommandFromQueue(Unit unit)
         {
             if (!CommandsQueue.TryGetValue(unit, out var queue)) return;
-            queue.Dequeue().StartCommandExecution();
-            unit.IsBusy = true;
+            _currentUnitsCommand[unit] = queue.Dequeue();
+            _currentUnitsCommand[unit].StartCommandExecution();
+            OnAnyQueueChanged?.Invoke(unit);
+            unit.IsBusy = true;    
         }
 
         public static string ToString(Unit unit)
         {
-            string resultString = "Unit commands:\r\n";
+            string resultString = "";
+            if (_currentUnitsCommand.TryGetValue(unit, out var currentCommand))
+            {
+                resultString += currentCommand.ToString() + "\r\n";
+            }
+
             if (CommandsQueue.TryGetValue(unit, out var queue))
             {
                 foreach (var command in queue)

@@ -29,7 +29,6 @@ namespace Mandragora.UnitBased
             if (_unit.Agent.remainingDistance > _unit.Agent.stoppingDistance) return;
             if (_unit.Agent.hasPath && _unit.Agent.velocity.sqrMagnitude != 0f) return;
             OnNavMeshReachDestination?.Invoke(_unit);
-            IsAgentHavePath = false;
         }
 
         public void Move(Vector3 destination, bool isQueueCommand)
