@@ -53,8 +53,16 @@ namespace Mandragora.Commands
         protected virtual void CommandExecutionComplete(Unit unit)
         {
             if (!CommandsQueue.TryGetValue(unit, out var queue)) return;
-            if (queue.Count > 0) PlayCommandFromQueue(unit);
-            else unit.IsBusy = false;
+            if (queue.Count > 0)
+            {
+                PlayCommandFromQueue(unit);
+            }
+            else
+            {
+                unit.IsBusy = false;
+                _currentUnitsCommand[unit] = null;
+                OnAnyQueueChanged?.Invoke(unit);
+            }
         }
 
         private static void PlayCommandFromQueue(Unit unit)
@@ -71,7 +79,7 @@ namespace Mandragora.Commands
             string resultString = "";
             if (_currentUnitsCommand.TryGetValue(unit, out var currentCommand))
             {
-                resultString += currentCommand.ToString() + "\r\n";
+                resultString += currentCommand?.ToString() + "\r\n";
             }
 
             if (CommandsQueue.TryGetValue(unit, out var queue))
