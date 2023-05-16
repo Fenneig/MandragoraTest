@@ -39,12 +39,7 @@ namespace Mandragora.Environment.Interactables
         public void StartInteractSequence(Unit unit, bool isQueuedAction)
         {
             if (UnitsInQueue.Contains(unit) && !isQueuedAction) return;
-            var tempqueue = new Queue<Unit>(UnitsInQueue);
-            tempqueue.Enqueue(unit);
-            var command = new QueueCommand(unit, tempqueue, _interactPosition.position, _queueDirection.position, QueueId);
-            if (isQueuedAction) command.AddToQueue(unit);
-            else command.StartNewQueue(unit);
-            UnitsInQueue = new Queue<Unit>(tempqueue);
+            unit.QueueComponent.Enqueue(unit, UnitsInQueue, QueueId, _interactPosition.position, _queueDirection.position, isQueuedAction);
             unit.RotateComponent.Rotate(_interactLookAtPosition.position, true);
             unit.InteractComponent.Interact(this, true);
             unit.MoveComponent.Move(_exitPosition.position, true);

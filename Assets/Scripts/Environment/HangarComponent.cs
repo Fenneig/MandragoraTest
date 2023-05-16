@@ -36,9 +36,9 @@ namespace Mandragora.Environment
         {
             if (_isUnitInSafePosition)
             {
-                BaseCommand.SetAlertState(false);
-                BaseCommand.PlayCommandFromQueue(_linkedUnit);
+                BaseCommand.ReadFromStashUnitCommandLines(_linkedUnit);
             }
+
             _isGateClosed = false;
         }
 
@@ -53,6 +53,7 @@ namespace Mandragora.Environment
             
             if (_isAlert)
             {
+                BaseCommand.StashUnitCommandLines(_linkedUnit);
                 _linkedUnit.Agent.SetDestination(_unitStayPosition.position);
                 _linkedUnit.MoveComponent.IsAgentHavePath = true;
                 _isUnitInSafePosition = false;
@@ -65,8 +66,7 @@ namespace Mandragora.Environment
                 }
                 else
                 {
-                    BaseCommand.SetAlertState(false);
-                    BaseCommand.PlayCommandFromQueue(_linkedUnit);
+                    BaseCommand.ReadFromStashUnitCommandLines(_linkedUnit);
                 }
             }
         }

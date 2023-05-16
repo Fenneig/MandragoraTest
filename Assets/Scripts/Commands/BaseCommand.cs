@@ -22,6 +22,7 @@ namespace Mandragora.Commands
             }
             else
             {
+                _preAlertCommandsQueue.Add(unit, new Queue<BaseCommand>());
                 var newQueue = new Queue<BaseCommand>();
                 CommandsQueue.Add(unit, newQueue);
                 newQueue.Enqueue(this);
@@ -43,6 +44,7 @@ namespace Mandragora.Commands
             }
             else
             {
+                _preAlertCommandsQueue.Add(unit, new Queue<BaseCommand>());
                 var newQueue = new Queue<BaseCommand>();
                 CommandsQueue.Add(unit, newQueue);
                 newQueue.Enqueue(this);
@@ -62,17 +64,17 @@ namespace Mandragora.Commands
             {
                 unit.IsBusy = false;
                 CurrentUnitsCommand[unit] = null;
-                OnAnyQueueChanged?.Invoke(unit);
             }
+
+            OnAnyQueueChanged?.Invoke(unit);
         }
 
-        public static void PlayCommandFromQueue(Unit unit)
+        private static void PlayCommandFromQueue(Unit unit)
         {
-            if (!CommandsQueue.TryGetValue(unit, out var queue)) return;
+            if (!CommandsQueue.TryGetValue(unit, out var queue) || queue.Count == 0) return;
             CurrentUnitsCommand[unit] = queue.Dequeue();
             CurrentUnitsCommand[unit].StartCommandExecution();
-            OnAnyQueueChanged?.Invoke(unit);
-            unit.IsBusy = true;    
+            unit.IsBusy = true;
         }
 
         public static string ToString(Unit unit)
@@ -100,36 +102,44 @@ namespace Mandragora.Commands
             return "";
         }
 
-        //TODO: исправить работу очередей при возврате действий
-        public static void SetAlertState(bool state)
+        public static void SetAlertState(bool isAlert)
         {
-            if (state)
+            if (isAlert)
             {
                 _preAlertCommandsQueue = new Dictionary<Unit, Queue<BaseCommand>>();
-                
                 foreach (var commandQueue in CommandsQueue)
                 {
                     var unit = commandQueue.Key;
-                    OnAnyActionCanceled?.Invoke(unit);
                     _preAlertCommandsQueue.Add(unit, new Queue<BaseCommand>());
-                    _preAlertCommandsQueue[unit].Enqueue(CurrentUnitsCommand[unit]);
-                    CurrentUnitsCommand[unit] = null;
-                    foreach (var command in commandQueue.Value)
-                    {
-                        _preAlertCommandsQueue[unit].Enqueue(command);
-                    }
-                    
-                    CommandsQueue = new Dictionary<Unit, Queue<BaseCommand>>();
                 }
             }
             else
             {
-                foreach (var commandQueue in _preAlertCommandsQueue)
-                {
-                    var unit = commandQueue.Key;
-                    CommandsQueue[unit] = new Queue<BaseCommand>(commandQueue.Value);
-                }
+                CommandsQueue = new Dictionary<Unit, Queue<BaseCommand>>();
             }
+        }
+
+        public static void StashUnitCommandLines(Unit unit)
+        {
+            if (!CommandsQueue.TryGetValue(unit, out var commandQueue)) return;
+
+            _preAlertCommandsQueue[unit].Enqueue(CurrentUnitsCommand[unit]);
+
+            foreach (var command in commandQueue)
+            {
+                _preAlertCommandsQueue[unit].Enqueue(command);
+            }
+
+            OnAnyActionCanceled?.Invoke(unit);
+        }
+
+        public static void ReadFromStashUnitCommandLines(Unit unit)
+        {
+            if (!_preAlertCommandsQueue.ContainsKey(unit)) return;
+            var commandQueue = _preAlertCommandsQueue[unit];
+            CommandsQueue.Add(unit, new Queue<BaseCommand>(commandQueue));
+
+            PlayCommandFromQueue(unit);
         }
     }
 }

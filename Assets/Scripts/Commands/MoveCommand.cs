@@ -13,14 +13,15 @@ namespace Mandragora.Commands
         {
             _unit = unit;
             _destination = destination;
+            OnAnyActionCanceled += CheckIsThisCommandCanceled;
         }
 
-        public override void StartCommandExecution()
+        protected override void StartCommandExecution()
         {
+            _isCommandCanceled = false;
             _unit.MoveComponent.IsAgentHavePath = true;
             _unit.MoveComponent.OnNavMeshReachDestination += CommandExecutionComplete;
             _unit.Agent.SetDestination(_destination);
-            OnAnyActionCanceled += CheckIsThisCommandCanceled;
             base.StartCommandExecution();
         }
 
@@ -28,23 +29,20 @@ namespace Mandragora.Commands
         {
             if (CurrentUnitsCommand[unit] == this)
             {
-                ClearMethodsLinks();
+                _isCommandCanceled = true;
                 _unit.Agent.SetDestination(_unit.transform.position);
                 _unit.MoveComponent.IsAgentHavePath = false;
             }
         }
 
-        private void ClearMethodsLinks()
-        {           
-            _unit.MoveComponent.OnNavMeshReachDestination -= CommandExecutionComplete;
-            OnAnyActionCanceled -= CheckIsThisCommandCanceled;
-        }
 
         protected override void CommandExecutionComplete(Unit unit)
         {
-            ClearMethodsLinks();
+            if (!_isCommandCanceled) return;
+            _unit.MoveComponent.OnNavMeshReachDestination -= CommandExecutionComplete;
+            OnAnyActionCanceled -= CheckIsThisCommandCanceled;
             _unit.MoveComponent.IsAgentHavePath = false;
-            if (!_isCommandCanceled) base.CommandExecutionComplete(unit);
+            base.CommandExecutionComplete(unit);
         }
 
         public override string ToString()

@@ -44,11 +44,12 @@ GameObject:
   - component: {fileID: 2467838777399915011}
   - component: {fileID: 8486979398746625805}
   - component: {fileID: 9713233902218794}
+  - component: {fileID: 5871388051977500522}
   - component: {fileID: 6536272012261999362}
   - component: {fileID: 7490430351525984842}
   - component: {fileID: 7102891637691863064}
-  - component: {fileID: 5871388051977500522}
   - component: {fileID: 8281075592788551170}
+  - component: {fileID: 3818778513341745814}
   m_Layer: 6
   m_Name: Bot
   m_TagString: Untagged
@@ -109,6 +110,27 @@ NavMeshAgent:
   m_BaseOffset: 0.92984134
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
+--- !u!95 &5871388051977500522
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2987108000363931833}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: a2517309e21f8244496bf72279ebc4fa, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!114 &6536272012261999362
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -148,27 +170,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _rotateSpeed: 3
---- !u!95 &5871388051977500522
-Animator:
-  serializedVersion: 5
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2987108000363931833}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: a2517309e21f8244496bf72279ebc4fa, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_StabilizeFeet: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorStateOnDisable: 0
-  m_WriteDefaultValuesOnDisable: 0
 --- !u!114 &8281075592788551170
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -179,6 +180,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0aca77f593474d3ba4d38b5332d7410b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &3818778513341745814
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2987108000363931833}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c9b8b94678c643ce8f839d10980018e6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &5211658727848545141

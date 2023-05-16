@@ -12,7 +12,7 @@ namespace Mandragora.Commands
             _interactable = interactable;
         }
 
-        public override void StartCommandExecution()
+        protected override void StartCommandExecution()
         {
             _interactable.Interact();
             _interactable.OnInteractionCompleted += CommandExecutionComplete;

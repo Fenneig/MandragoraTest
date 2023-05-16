@@ -24,8 +24,7 @@ namespace Mandragora.Systems
 
         public void SetAlertState(bool alertState)
         {
-            if (alertState)
-                BaseCommand.SetAlertState(true);
+            BaseCommand.SetAlertState(alertState);
             OnAlertStateChanged?.Invoke(alertState);
             foreach (var hangar in _sceneHangars)
             {

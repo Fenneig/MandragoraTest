@@ -1,5 +1,4 @@
 using System;
-using Mandragora.Commands;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -9,19 +8,23 @@ namespace Mandragora.UnitBased
     [RequireComponent(typeof(MoveComponent))]
     [RequireComponent(typeof(RotateComponent))]
     [RequireComponent(typeof(InteractComponent))]
+    [RequireComponent(typeof(QueueComponent))]
     public class Unit : MonoBehaviour
     {
         [Header("Animator")]
         [SerializeField] private Animator _manipulatorAnimator;
         [SerializeField] private Animator _visualAnimator;
+        
         private NavMeshAgent _agent;
         private MoveComponent _moveComponent;
         private RotateComponent _rotateComponent;
         private InteractComponent _interactComponent;
+        private QueueComponent _queueComponent;
         public NavMeshAgent Agent => _agent;
         public MoveComponent MoveComponent => _moveComponent;
         public RotateComponent RotateComponent => _rotateComponent;
         public InteractComponent InteractComponent => _interactComponent;
+        public QueueComponent QueueComponent => _queueComponent;
         public bool IsBusy { get; set; }
         public event Action OnUnitAnimationComplete;
 
@@ -31,6 +34,7 @@ namespace Mandragora.UnitBased
             _moveComponent = GetComponent<MoveComponent>();
             _rotateComponent = GetComponent<RotateComponent>();
             _interactComponent = GetComponent<InteractComponent>();
+            _queueComponent = GetComponent<QueueComponent>();
         }
 
         public void TriggerAnimation(string animationTriggerParameter, AnimatorType animatorType)
@@ -48,17 +52,6 @@ namespace Mandragora.UnitBased
         private void AnimationComplete()
         {
             OnUnitAnimationComplete?.Invoke();
-        }
-
-        public override string ToString()
-        {
-            return "";
-        }
-
-        [ContextMenu("Play command")]
-        public void PlayCommand()
-        {
-            BaseCommand.PlayCommandFromQueue(this);
         }
     }
 

@@ -66,5 +66,10 @@ namespace Mandragora.UnitBased
         {
             _isAlertState = state;
         }
+
+        private void OnDestroy()
+        {
+            GameSession.Instance.OnAlertStateChanged -= SetOnAlertState;
+        }
     }
 }
