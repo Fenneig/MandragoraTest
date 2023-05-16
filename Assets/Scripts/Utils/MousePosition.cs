@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-namespace Mandragora
+namespace Mandragora.Utils
 {
     public class MousePosition : MonoBehaviour
     {

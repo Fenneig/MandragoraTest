@@ -1,4 +1,4 @@
-﻿using Mandragora.Interactables;
+﻿using Mandragora.Environment.Interactables;
 using Mandragora.UnitBased;
 
 namespace Mandragora.Commands

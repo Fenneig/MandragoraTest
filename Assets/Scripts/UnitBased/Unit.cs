@@ -1,4 +1,5 @@
 using System;
+using Mandragora.Commands;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -47,6 +48,17 @@ namespace Mandragora.UnitBased
         private void AnimationComplete()
         {
             OnUnitAnimationComplete?.Invoke();
+        }
+
+        public override string ToString()
+        {
+            return "";
+        }
+
+        [ContextMenu("Play command")]
+        public void PlayCommand()
+        {
+            BaseCommand.PlayCommandFromQueue(this);
         }
     }
 

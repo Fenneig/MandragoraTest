@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Mandragora.Systems;
+using UnityEngine;
 
 namespace Mandragora.UnitBased
 {
@@ -7,9 +8,12 @@ namespace Mandragora.UnitBased
         [SerializeField] private Unit _unit;
         [SerializeField] private MeshRenderer _selectionMeshRenderer;
 
+        private UnitActionSystem _unitActionSystem;
+
         private void Start()
         {
-            UnitActionSystem.Instance.OnSelectedUnitChanged += UnitActionSystem_OnSelectedUnitChanged;
+            _unitActionSystem = GameSession.Instance.UnitActionSystem;
+            _unitActionSystem.OnSelectedUnitChanged += UnitActionSystem_OnSelectedUnitChanged;
         }
 
         private void UnitActionSystem_OnSelectedUnitChanged() 
@@ -17,12 +21,12 @@ namespace Mandragora.UnitBased
 
         private void UpdateVisual()
         {
-            _selectionMeshRenderer.enabled = UnitActionSystem.Instance.SelectedUnit == _unit;
+            _selectionMeshRenderer.enabled = _unitActionSystem.SelectedUnit == _unit;
         }
 
         private void OnDestroy()
         {
-            UnitActionSystem.Instance.OnSelectedUnitChanged -= UnitActionSystem_OnSelectedUnitChanged;
+            _unitActionSystem.OnSelectedUnitChanged -= UnitActionSystem_OnSelectedUnitChanged;
         }
     }
 }

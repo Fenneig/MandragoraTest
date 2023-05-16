@@ -25,6 +25,17 @@ namespace Mandragora.Commands
             _queueDirection = queueDirection - firstInQueuePosition;
             _queueId = queueId;
             OnAnyCommandQueueChanged += UpdateQueue;
+            OnAnyActionCanceled += CheckIsThisCommandCanceled;
+        }
+
+        private void CheckIsThisCommandCanceled(Unit unit)
+        {
+            if (CurrentUnitsCommand[unit] == this)
+            {
+                ClearMethodsLinks();
+                _unit.Agent.SetDestination(_unit.transform.position);
+                _unit.MoveComponent.IsAgentHavePath = false;
+            }
         }
 
         private void UpdateQueue(Queue<Unit> newQueue, string queueId)
@@ -42,6 +53,11 @@ namespace Mandragora.Commands
 
         public override void StartCommandExecution()
         {
+            if (!_unitsQueue.Contains(_unit))
+            {
+                _unitsQueue.Enqueue(_unit);
+                //OnAnyCommandQueueChanged?.Invoke(_unitsQueue, _queueId);
+            }
             _unit.MoveComponent.OnNavMeshReachDestination += AgentReady;
             MoveToNewPosition();
             base.StartCommandExecution();
@@ -54,7 +70,6 @@ namespace Mandragora.Commands
                 ClearMethodsLinks();
                 return;
             }
-
             Vector3 moveToPosition = GetQueuePosition();
             _unit.MoveComponent.IsAgentHavePath = true;
             _unit.Agent.SetDestination(moveToPosition);
@@ -82,7 +97,7 @@ namespace Mandragora.Commands
 
         public override string ToString()
         {
-            return _queuePosition == 0 ? "" : $"Stay in queue. Position = {_queuePosition}";
+            return _queuePosition == 0 ? "0" : $"Staying in queue. Position = {_queuePosition}";
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Mandragora.CameraBased;
+using Mandragora.Systems;
 using Mandragora.UnitBased;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -9,6 +10,13 @@ namespace Mandragora.Input
     {
         [SerializeField] private CameraInputController _inputController;
 
+        private UnitActionSystem _unitActionSystem;
+
+        private void Start()
+        {
+            _unitActionSystem = GameSession.Instance.UnitActionSystem;
+        }
+
         public void OnCameraMovement(InputAction.CallbackContext context) =>
             _inputController.CameraMoveDirection = context.ReadValue<Vector2>();
 
@@ -17,20 +25,18 @@ namespace Mandragora.Input
 
         public void OnSelect(InputAction.CallbackContext context)
         {
-            if (context.started)
-                UnitActionSystem.Instance.HandleUnitSelection(Mouse.current.position.ReadValue());
+            if (context.started) _unitActionSystem.HandleUnitSelection(Mouse.current.position.ReadValue());
         }
 
         public void OnCommand(InputAction.CallbackContext context)
         {
-            if (context.started)
-                UnitActionSystem.Instance.HandleCommand(Mouse.current.position.ReadValue());
+            if (context.started) _unitActionSystem.HandleCommand(Mouse.current.position.ReadValue());
         }
 
         public void OnAlternativeAction(InputAction.CallbackContext context)
         {
-            if (context.started) UnitActionSystem.Instance.IsAlternativeAction = true;
-            if (context.canceled) UnitActionSystem.Instance.IsAlternativeAction = false;
+            if (context.started) _unitActionSystem.IsAlternativeAction = true;
+            if (context.canceled) _unitActionSystem.IsAlternativeAction = false;
         }
     }
 }

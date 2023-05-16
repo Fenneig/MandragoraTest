@@ -1,5 +1,5 @@
 ﻿using Mandragora.Commands;
-using Mandragora.Interactables;
+using Mandragora.Environment.Interactables;
 using UnityEngine;
 
 namespace Mandragora.UnitBased

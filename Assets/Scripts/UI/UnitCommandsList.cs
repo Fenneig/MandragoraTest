@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Mandragora.Commands;
+using Mandragora.Systems;
 using Mandragora.UnitBased;
 using UnityEngine;
 
@@ -11,28 +12,29 @@ namespace Mandragora.UI
         [SerializeField] private CommandWidget _commandPrefab;
 
         private List<CommandWidget> _commandsList = new List<CommandWidget>();
-        private Unit _selectedUnit;
+        private UnitActionSystem _unitActionSystem;
 
         private void Start()
         {
-            UnitActionSystem.Instance.OnSelectedUnitChanged += UpdateUIList;
+            _unitActionSystem = GameSession.Instance.UnitActionSystem;
+            _unitActionSystem.OnSelectedUnitChanged += UpdateUIList;
             BaseCommand.OnAnyQueueChanged += CheckIsNeedToUpdateUI;
         }
 
         private void CheckIsNeedToUpdateUI(Unit unit)
         {
-            if (unit == UnitActionSystem.Instance.SelectedUnit) 
+            if (unit == _unitActionSystem.SelectedUnit) 
                 UpdateUIList();
         }
 
         public void UpdateUIList()
         {
-            if (UnitActionSystem.Instance.SelectedUnit == null) return;
+            if (_unitActionSystem.SelectedUnit == null) return;
             foreach (var commandGameObject in _commandsList)
             {
                 commandGameObject.gameObject.SetActive(false);
             }
-            var commands = BaseCommand.ToString(UnitActionSystem.Instance.SelectedUnit);
+            var commands = BaseCommand.ToString(_unitActionSystem.SelectedUnit);
             var commandsString = commands.Split("\r\n").ToList();
             commandsString = new List<string>(commandsString.Where(commandDescription => !string.IsNullOrEmpty(commandDescription)));
             
@@ -51,7 +53,7 @@ namespace Mandragora.UI
 
         private void OnDestroy()
         {
-            UnitActionSystem.Instance.OnSelectedUnitChanged -= UpdateUIList;
+            _unitActionSystem.OnSelectedUnitChanged -= UpdateUIList;
             BaseCommand.OnAnyQueueChanged -= CheckIsNeedToUpdateUI;
         }
     }

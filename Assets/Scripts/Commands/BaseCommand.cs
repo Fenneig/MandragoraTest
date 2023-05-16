@@ -7,7 +7,8 @@ namespace Mandragora.Commands
     public abstract class BaseCommand
     {
         protected static Dictionary<Unit, Queue<BaseCommand>> CommandsQueue = new Dictionary<Unit, Queue<BaseCommand>>();
-        private static Dictionary<Unit, BaseCommand> _currentUnitsCommand = new Dictionary<Unit, BaseCommand>();
+        protected static Dictionary<Unit, BaseCommand> CurrentUnitsCommand = new Dictionary<Unit, BaseCommand>();
+        private static Dictionary<Unit, Queue<BaseCommand>> _preAlertCommandsQueue = new Dictionary<Unit, Queue<BaseCommand>>();
 
         public static Action<Unit> OnAnyActionCanceled;
         public static Action<Unit> OnAnyQueueChanged;
@@ -60,16 +61,16 @@ namespace Mandragora.Commands
             else
             {
                 unit.IsBusy = false;
-                _currentUnitsCommand[unit] = null;
+                CurrentUnitsCommand[unit] = null;
                 OnAnyQueueChanged?.Invoke(unit);
             }
         }
 
-        private static void PlayCommandFromQueue(Unit unit)
+        public static void PlayCommandFromQueue(Unit unit)
         {
             if (!CommandsQueue.TryGetValue(unit, out var queue)) return;
-            _currentUnitsCommand[unit] = queue.Dequeue();
-            _currentUnitsCommand[unit].StartCommandExecution();
+            CurrentUnitsCommand[unit] = queue.Dequeue();
+            CurrentUnitsCommand[unit].StartCommandExecution();
             OnAnyQueueChanged?.Invoke(unit);
             unit.IsBusy = true;    
         }
@@ -77,9 +78,9 @@ namespace Mandragora.Commands
         public static string ToString(Unit unit)
         {
             string resultString = "";
-            if (_currentUnitsCommand.TryGetValue(unit, out var currentCommand))
+            if (CurrentUnitsCommand.TryGetValue(unit, out var currentCommand))
             {
-                resultString += currentCommand?.ToString() + "\r\n";
+                resultString += currentCommand + "\r\n";
             }
 
             if (CommandsQueue.TryGetValue(unit, out var queue))
@@ -97,6 +98,38 @@ namespace Mandragora.Commands
         public override string ToString()
         {
             return "";
+        }
+
+        //TODO: исправить работу очередей при возврате действий
+        public static void SetAlertState(bool state)
+        {
+            if (state)
+            {
+                _preAlertCommandsQueue = new Dictionary<Unit, Queue<BaseCommand>>();
+                
+                foreach (var commandQueue in CommandsQueue)
+                {
+                    var unit = commandQueue.Key;
+                    OnAnyActionCanceled?.Invoke(unit);
+                    _preAlertCommandsQueue.Add(unit, new Queue<BaseCommand>());
+                    _preAlertCommandsQueue[unit].Enqueue(CurrentUnitsCommand[unit]);
+                    CurrentUnitsCommand[unit] = null;
+                    foreach (var command in commandQueue.Value)
+                    {
+                        _preAlertCommandsQueue[unit].Enqueue(command);
+                    }
+                    
+                    CommandsQueue = new Dictionary<Unit, Queue<BaseCommand>>();
+                }
+            }
+            else
+            {
+                foreach (var commandQueue in _preAlertCommandsQueue)
+                {
+                    var unit = commandQueue.Key;
+                    CommandsQueue[unit] = new Queue<BaseCommand>(commandQueue.Value);
+                }
+            }
         }
     }
 }

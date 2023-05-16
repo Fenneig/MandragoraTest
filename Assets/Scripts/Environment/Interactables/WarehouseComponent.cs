@@ -2,7 +2,7 @@
 using Mandragora.UnitBased;
 using Mandragora.Utils;
 
-namespace Mandragora.Interactables
+namespace Mandragora.Environment.Interactables
 {
     public class WarehouseComponent : AbstractInteractable
     {

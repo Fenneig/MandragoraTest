@@ -20,20 +20,30 @@ namespace Mandragora.Commands
             _unit.MoveComponent.IsAgentHavePath = true;
             _unit.MoveComponent.OnNavMeshReachDestination += CommandExecutionComplete;
             _unit.Agent.SetDestination(_destination);
-            OnAnyActionCanceled += CommandCanceled;
+            OnAnyActionCanceled += CheckIsThisCommandCanceled;
             base.StartCommandExecution();
         }
 
-        private void CommandCanceled(Unit _)
+        private void CheckIsThisCommandCanceled(Unit unit)
         {
-            _isCommandCanceled = true;
+            if (CurrentUnitsCommand[unit] == this)
+            {
+                ClearMethodsLinks();
+                _unit.Agent.SetDestination(_unit.transform.position);
+                _unit.MoveComponent.IsAgentHavePath = false;
+            }
+        }
+
+        private void ClearMethodsLinks()
+        {           
+            _unit.MoveComponent.OnNavMeshReachDestination -= CommandExecutionComplete;
+            OnAnyActionCanceled -= CheckIsThisCommandCanceled;
         }
 
         protected override void CommandExecutionComplete(Unit unit)
         {
-            _unit.MoveComponent.OnNavMeshReachDestination -= CommandExecutionComplete;
+            ClearMethodsLinks();
             _unit.MoveComponent.IsAgentHavePath = false;
-            OnAnyActionCanceled -= CommandCanceled;
             if (!_isCommandCanceled) base.CommandExecutionComplete(unit);
         }
 

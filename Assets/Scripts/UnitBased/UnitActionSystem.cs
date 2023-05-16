@@ -1,23 +1,22 @@
 ﻿using System;
-using Mandragora.Interactables;
+using Mandragora.Environment.Interactables;
+using Mandragora.Systems;
 using UnityEngine;
 
 namespace Mandragora.UnitBased
 {
-    //TODO: Возможно будет хорошей идеей избавиться от синглтона и заинжектить 
-    //TODO: систему в другой объект. На данный момент, думаю можно и так оставить.
     public class UnitActionSystem : MonoBehaviour
     {
-        public static UnitActionSystem Instance { get; private set; }
         public event Action OnSelectedUnitChanged;
         
         [SerializeField] private LayerMask _unitLayerMask;
         [SerializeField] private LayerMask _groundLayerMask;
         [SerializeField] private LayerMask _interactableLayerMask;
 
-       
         private Camera _camera;
         private Unit _selectedUnit;
+        private bool _isAlertState;
+
         
         public Unit SelectedUnit
         {
@@ -31,10 +30,10 @@ namespace Mandragora.UnitBased
         
         public bool IsAlternativeAction { get; set; }
 
-        private void Awake()
+        private void Start()
         {
-            Instance ??= this;
             _camera = Camera.main;
+            GameSession.Instance.OnAlertStateChanged += SetOnAlertState;
         }
 
         public void HandleUnitSelection(Vector3 mouseScreenPosition)
@@ -50,7 +49,7 @@ namespace Mandragora.UnitBased
 
         public void HandleCommand(Vector3 mouseScreenPosition)
         {
-            if (SelectedUnit == null) return;
+            if (SelectedUnit == null || _isAlertState) return;
             var ray = _camera.ScreenPointToRay(mouseScreenPosition);
            
             if (Physics.Raycast(ray, out RaycastHit interactableHit, float.MaxValue, _interactableLayerMask))
@@ -61,6 +60,11 @@ namespace Mandragora.UnitBased
             
             if (!Physics.Raycast(ray, out RaycastHit groundHit, float.MaxValue, _groundLayerMask)) return;
             SelectedUnit.MoveComponent.Move(groundHit.point, IsAlternativeAction);
+        }
+
+        private void SetOnAlertState(bool state)
+        {
+            _isAlertState = state;
         }
     }
 }

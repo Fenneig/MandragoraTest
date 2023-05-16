@@ -1,7 +1,7 @@
 ﻿using System;
 using Mandragora.UnitBased;
 
-namespace Mandragora.Interactables
+namespace Mandragora.Environment.Interactables
 {
     public interface IInteractable
     {

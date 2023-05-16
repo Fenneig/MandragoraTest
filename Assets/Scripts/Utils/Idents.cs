@@ -8,6 +8,7 @@
             public static string DeliverCargo = "Deliver";
             public static string Interact = "Interact";
             public static string Moving = "IsMoving";
+            public static string HangarDoorIsClosed = "IsClose";
         }
 
         public static class Scenes

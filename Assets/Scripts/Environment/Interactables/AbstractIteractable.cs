@@ -5,7 +5,7 @@ using Mandragora.Commands;
 using Mandragora.UnitBased;
 using UnityEngine;
 
-namespace Mandragora.Interactables
+namespace Mandragora.Environment.Interactables
 {
     public abstract class AbstractInteractable : MonoBehaviour, IInteractable
     {
