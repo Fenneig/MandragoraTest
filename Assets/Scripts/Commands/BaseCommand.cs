@@ -32,7 +32,7 @@ namespace Mandragora.Commands
             OnAnyQueueChanged?.Invoke(unit);
         }
 
-        public virtual void StartCommandExecution() { }
+        protected virtual void StartCommandExecution() { }
 
         public void StartNewQueue(Unit unit)
         {
