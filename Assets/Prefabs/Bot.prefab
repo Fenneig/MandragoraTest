@@ -46,10 +46,6 @@ GameObject:
   - component: {fileID: 9713233902218794}
   - component: {fileID: 5871388051977500522}
   - component: {fileID: 6536272012261999362}
-  - component: {fileID: 7490430351525984842}
-  - component: {fileID: 7102891637691863064}
-  - component: {fileID: 8281075592788551170}
-  - component: {fileID: 3818778513341745814}
   m_Layer: 6
   m_Name: Bot
   m_TagString: Untagged
@@ -145,55 +141,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _manipulatorAnimator: {fileID: 5871388051977500522}
   _visualAnimator: {fileID: 881418190663317005}
---- !u!114 &7490430351525984842
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2987108000363931833}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 579796d5ca8b450aa9c218432ae280cb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &7102891637691863064
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2987108000363931833}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0ad032daf0f846c098463742dd990dda, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _rotateSpeed: 3
---- !u!114 &8281075592788551170
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2987108000363931833}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0aca77f593474d3ba4d38b5332d7410b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &3818778513341745814
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2987108000363931833}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c9b8b94678c643ce8f839d10980018e6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  _rotateSpeed: 5
 --- !u!1 &5211658727848545141
 GameObject:
   m_ObjectHideFlags: 0
