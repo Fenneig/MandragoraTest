@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Mandragora.Systems;
 using Unit = Mandragora.UnitBased.Unit;
 
 namespace Mandragora.Commands
@@ -80,6 +81,7 @@ namespace Mandragora.Commands
         public static string ToString(Unit unit)
         {
             string resultString = "";
+            if (GameSession.Instance.IsAlert) return "Hide in hangar!";
             if (CurrentUnitsCommand.TryGetValue(unit, out var currentCommand))
             {
                 resultString += currentCommand + "\r\n";
@@ -135,7 +137,7 @@ namespace Mandragora.Commands
 
         public static void ReadFromStashUnitCommandLines(Unit unit)
         {
-            if (!_preAlertCommandsQueue.ContainsKey(unit)) return;
+            if (!_preAlertCommandsQueue.ContainsKey(unit) || _preAlertCommandsQueue[unit].Count == 0) return;
             var commandQueue = _preAlertCommandsQueue[unit];
             CommandsQueue.Add(unit, new Queue<BaseCommand>(commandQueue));
 

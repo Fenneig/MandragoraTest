@@ -9,6 +9,8 @@ namespace Mandragora.UnitBased
     {
         private Unit _unit;
         
+        private const float THRESHOLD_REACH_POSITION = 1f;
+
         public bool IsAgentHavePath { get; set; }
 
         public event Action<Unit> OnNavMeshReachDestination;
@@ -17,8 +19,10 @@ namespace Mandragora.UnitBased
         {
             _unit = unit;
         }
-        
 
+        public bool IsAgentReachDestination(Vector3 destination) =>
+            Mathf.Abs(_unit.transform.position.magnitude - destination.magnitude) <= THRESHOLD_REACH_POSITION;
+        
         public void CheckAgentDestination()
         {
             if (!IsAgentHavePath) return;

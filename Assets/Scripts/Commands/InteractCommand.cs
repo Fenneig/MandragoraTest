@@ -1,5 +1,6 @@
 ﻿using Mandragora.Environment.Interactables;
 using Mandragora.UnitBased;
+using UnityEngine;
 
 namespace Mandragora.Commands
 {
@@ -21,6 +22,7 @@ namespace Mandragora.Commands
 
         protected override void CommandExecutionComplete(Unit unit)
         {
+            if (!CurrentUnitsCommand.TryGetValue(unit, out var currentCommand) || currentCommand != this) return;
             _interactable.OnInteractionCompleted -= CommandExecutionComplete;
             base.CommandExecutionComplete(unit);
         }

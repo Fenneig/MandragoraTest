@@ -13,6 +13,7 @@ namespace Mandragora.Systems
         [SerializeField] private List<HangarComponent> _sceneHangars;
 
         public UnitActionSystem UnitActionSystem => _unitActionSystem;
+        public bool IsAlert { get; private set; }
 
         public static GameSession Instance;
         public event Action<bool> OnAlertStateChanged;
@@ -24,6 +25,7 @@ namespace Mandragora.Systems
 
         public void SetAlertState(bool alertState)
         {
+            IsAlert = alertState;
             BaseCommand.SetAlertState(alertState);
             OnAlertStateChanged?.Invoke(alertState);
             foreach (var hangar in _sceneHangars)
