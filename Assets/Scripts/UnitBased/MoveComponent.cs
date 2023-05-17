@@ -5,25 +5,21 @@ using UnityEngine;
 
 namespace Mandragora.UnitBased
 {
-    public class MoveComponent : MonoBehaviour
+    public class MoveComponent 
     {
-        public bool IsAgentHavePath { get; set; }
-
         private Unit _unit;
         
+        public bool IsAgentHavePath { get; set; }
+
         public event Action<Unit> OnNavMeshReachDestination;
 
-        private void Awake()
+        public MoveComponent(Unit unit)
         {
-            _unit = GetComponent<Unit>();
+            _unit = unit;
         }
+        
 
-        private void Update()
-        {
-            CheckAgentDestination();
-        }
-
-        private void CheckAgentDestination()
+        public void CheckAgentDestination()
         {
             if (!IsAgentHavePath) return;
             if (_unit.Agent.pathPending) return;

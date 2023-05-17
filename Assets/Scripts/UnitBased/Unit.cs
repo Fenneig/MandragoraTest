@@ -5,15 +5,11 @@ using UnityEngine.AI;
 namespace Mandragora.UnitBased
 {
     [RequireComponent(typeof(NavMeshAgent))]
-    [RequireComponent(typeof(MoveComponent))]
-    [RequireComponent(typeof(RotateComponent))]
-    [RequireComponent(typeof(InteractComponent))]
-    [RequireComponent(typeof(QueueComponent))]
     public class Unit : MonoBehaviour
     {
-        [Header("Animator")]
-        [SerializeField] private Animator _manipulatorAnimator;
+        [SerializeField, Header("Animator")] private Animator _manipulatorAnimator;
         [SerializeField] private Animator _visualAnimator;
+        [SerializeField, Header("Rotate stats")] private float _rotateSpeed;
         
         private NavMeshAgent _agent;
         private MoveComponent _moveComponent;
@@ -31,10 +27,15 @@ namespace Mandragora.UnitBased
         private void Awake()
         {
             _agent = GetComponent<NavMeshAgent>();
-            _moveComponent = GetComponent<MoveComponent>();
-            _rotateComponent = GetComponent<RotateComponent>();
-            _interactComponent = GetComponent<InteractComponent>();
-            _queueComponent = GetComponent<QueueComponent>();
+            _interactComponent = new InteractComponent(this);
+            _queueComponent = new QueueComponent(this);
+            _rotateComponent = new RotateComponent(this, _rotateSpeed);
+            _moveComponent = new MoveComponent(this);
+        }
+
+        private void Update()
+        {
+            _moveComponent.CheckAgentDestination();
         }
 
         public void TriggerAnimation(string animationTriggerParameter, AnimatorType animatorType)

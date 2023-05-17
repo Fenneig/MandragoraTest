@@ -4,13 +4,13 @@ using UnityEngine;
 
 namespace Mandragora.UnitBased
 {
-    public class QueueComponent : MonoBehaviour
+    public class QueueComponent
     {
         private Unit _unit;
         
-        private void Awake()
+        public QueueComponent(Unit unit)
         {
-            _unit = GetComponent<Unit>();
+            _unit = unit;
         }
 
         public void Enqueue(Unit unit, Queue<Unit> queue, string queueID, Vector3 firstInQueuePosition, Vector3 queueDirection, bool isQueuedAction)

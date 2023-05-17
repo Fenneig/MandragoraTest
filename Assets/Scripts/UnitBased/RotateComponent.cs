@@ -5,19 +5,19 @@ using UnityEngine;
 
 namespace Mandragora.UnitBased
 {
-    public class RotateComponent : MonoBehaviour
+    public class RotateComponent
     {
-        [SerializeField] private float _rotateSpeed;
-
         private Unit _unit;
-        
+        private float _rotateSpeed;
+
         private const float ROTATE_THRESHOLD = 2f;
         
         public event Action<Unit> OnNavMeshRotateReachDirection;
 
-        private void Awake()
+        public RotateComponent(Unit unit, float rotateSpeed)
         {
-            _unit = GetComponent<Unit>();
+            _unit = unit;
+            _rotateSpeed = rotateSpeed;
         }
 
         public void Rotate(Vector3 direction, bool isQueueCommand)
@@ -29,21 +29,21 @@ namespace Mandragora.UnitBased
         
         public void LookAt(Vector3 direction)
         {
-            StartCoroutine(LookRoutine(direction));
+            _unit.StartCoroutine(LookRoutine(direction));
         }
 
         private IEnumerator LookRoutine(Vector3 direction)
         {
-            Quaternion lookAt = Quaternion.LookRotation(direction - transform.position);
+            Quaternion lookAt = Quaternion.LookRotation(direction - _unit.transform.position);
             
-            while (Mathf.Abs(transform.eulerAngles.y - lookAt.eulerAngles.y) > ROTATE_THRESHOLD &&
-                   Mathf.Abs(transform.eulerAngles.y - lookAt.eulerAngles.y) - 360 <= -ROTATE_THRESHOLD)
+            while (Mathf.Abs(_unit.transform.eulerAngles.y - lookAt.eulerAngles.y) > ROTATE_THRESHOLD &&
+                   Mathf.Abs(_unit.transform.eulerAngles.y - lookAt.eulerAngles.y) - 360 <= -ROTATE_THRESHOLD)
             {
-                transform.rotation = Quaternion.Slerp(transform.rotation, lookAt, _rotateSpeed * Time.deltaTime);
+                _unit.transform.rotation = Quaternion.Slerp(_unit.transform.rotation, lookAt, _rotateSpeed * Time.deltaTime);
                 yield return null;
             }
 
-            transform.LookAt(direction);
+            _unit.transform.LookAt(direction);
             OnNavMeshRotateReachDirection?.Invoke(_unit);
         }
     }

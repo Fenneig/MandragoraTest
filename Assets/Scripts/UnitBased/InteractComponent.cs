@@ -1,16 +1,15 @@
 ﻿using Mandragora.Commands;
 using Mandragora.Environment.Interactables;
-using UnityEngine;
 
 namespace Mandragora.UnitBased
 {
-    public class InteractComponent : MonoBehaviour
+    public class InteractComponent
     {
         private Unit _unit;
 
-        private void Awake()
+        public InteractComponent(Unit unit)
         {
-            _unit = GetComponent<Unit>();
+            _unit = unit;
         }
 
         public void Interact(IInteractable interactable, bool isQueueCommand)
