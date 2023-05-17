@@ -10,8 +10,17 @@ namespace Mandragora.UnitBased
         private Unit _unit;
         
         private const float THRESHOLD_REACH_POSITION = 1f;
+        private bool _isAgentHavePath;
 
-        public bool IsAgentHavePath { get; set; }
+        public bool IsAgentHavePath
+        {
+            get => _isAgentHavePath;
+            set
+            {
+                _isAgentHavePath = value;
+                _unit.SetBoolAnimation(Idents.Animations.Moving, _isAgentHavePath, AnimatorType.Visual);
+            }
+        }
 
         public event Action<Unit> OnNavMeshReachDestination;
 
@@ -30,7 +39,6 @@ namespace Mandragora.UnitBased
             if (_unit.Agent.remainingDistance > _unit.Agent.stoppingDistance) return;
             if (_unit.Agent.hasPath && _unit.Agent.velocity.sqrMagnitude != 0f) return;
             OnNavMeshReachDestination?.Invoke(_unit);
-            _unit.SetBoolAnimation(Idents.Animations.Moving, false, AnimatorType.Visual);
         }
 
         public void Move(Vector3 destination, bool isQueueCommand)
@@ -38,7 +46,6 @@ namespace Mandragora.UnitBased
             var command = new MoveCommand(_unit, destination);
             if (isQueueCommand) command.AddToQueue(_unit);
             else command.StartNewQueue(_unit);
-            _unit.SetBoolAnimation(Idents.Animations.Moving, true, AnimatorType.Visual);
         }
     }
 }
