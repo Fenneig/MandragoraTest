@@ -15,6 +15,11 @@ namespace Mandragora.Environment.Interactables
 
         public override void OnInteractionComplete()
         {
+            if (UnitsInQueue.Count <= 0)
+            {
+                base.OnInteractionComplete();
+                return;
+            }
             CurrentUnitInteractWith = UnitsInQueue.Dequeue();
             QueueCommand.OnAnyCommandQueueChanged?.Invoke(UnitsInQueue, QueueId);
             CurrentUnitInteractWith.AnimationComponent.TriggerAnimation(Idents.Animations.TakeCargo, AnimatorType.Manipulator);

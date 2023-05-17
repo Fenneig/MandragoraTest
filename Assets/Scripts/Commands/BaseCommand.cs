@@ -37,6 +37,7 @@ namespace Mandragora.Commands
 
         public void StartNewQueue(Unit unit)
         {
+            if (GameSession.Instance.IsAlert) return;
             if (_commandsQueue.TryGetValue(unit, out var queue))
             {
                 OnAnyActionCanceled?.Invoke(unit);
@@ -56,6 +57,7 @@ namespace Mandragora.Commands
 
         protected virtual void CommandExecutionComplete(Unit unit)
         {
+            if (GameSession.Instance.IsAlert) return;
             if (!_commandsQueue.TryGetValue(unit, out var queue)) return;
             if (queue.Count > 0)
             {

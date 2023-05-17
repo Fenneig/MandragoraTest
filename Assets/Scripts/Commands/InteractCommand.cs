@@ -21,6 +21,7 @@ namespace Mandragora.Commands
 
         protected override void CommandExecutionComplete(Unit unit)
         {
+            if (unit == null) return;
             if (!CurrentUnitsCommand.TryGetValue(unit, out var currentCommand) || currentCommand != this) return;
             _interactable.OnInteractionCompleted -= CommandExecutionComplete;
             base.CommandExecutionComplete(unit);
