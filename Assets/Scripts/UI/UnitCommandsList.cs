@@ -19,7 +19,6 @@ namespace Mandragora.UI
             _unitActionSystem = GameSession.Instance.UnitActionSystem;
             _unitActionSystem.OnSelectedUnitChanged += UpdateUIList;
             BaseCommand.OnAnyQueueChanged += CheckIsNeedToUpdateUI;
-            GameSession.Instance.OnAlertStateChanged += UpdateUIList;
         }
 
         private void CheckIsNeedToUpdateUI(Unit unit)
@@ -27,8 +26,6 @@ namespace Mandragora.UI
             if (unit == _unitActionSystem.SelectedUnit) 
                 UpdateUIList();
         }
-
-        private void UpdateUIList(bool _) => UpdateUIList();
 
         private void UpdateUIList()
         {
@@ -58,8 +55,6 @@ namespace Mandragora.UI
         {
             _unitActionSystem.OnSelectedUnitChanged -= UpdateUIList;
             BaseCommand.OnAnyQueueChanged -= CheckIsNeedToUpdateUI;
-            GameSession.Instance.OnAlertStateChanged -= UpdateUIList;
-
         }
     }
 }

@@ -142,6 +142,7 @@ MonoBehaviour:
   _manipulatorAnimator: {fileID: 5871388051977500522}
   _visualAnimator: {fileID: 881418190663317005}
   _rotateSpeed: 5
+  _cargo: {fileID: 5211658727848545141}
 --- !u!1 &5211658727848545141
 GameObject:
   m_ObjectHideFlags: 0

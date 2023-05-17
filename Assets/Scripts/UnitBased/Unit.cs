@@ -9,7 +9,7 @@ namespace Mandragora.UnitBased
     {
         [SerializeField, Header("Animator")] private Animator _manipulatorAnimator;
         [SerializeField] private Animator _visualAnimator;
-        [SerializeField, Header("Rotate stats")] private float _rotateSpeed;
+        [SerializeField, Header("Rotate stats"), Space] private float _rotateSpeed;
         
         private NavMeshAgent _agent;
         private MoveComponent _moveComponent;

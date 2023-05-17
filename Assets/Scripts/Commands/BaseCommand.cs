@@ -73,8 +73,11 @@ namespace Mandragora.Commands
         private static void PlayCommandFromQueue(Unit unit)
         {
             if (!CommandsQueue.TryGetValue(unit, out var queue) || queue.Count == 0) return;
+
             CurrentUnitsCommand[unit] = queue.Dequeue();
             CurrentUnitsCommand[unit].StartCommandExecution();
+            OnAnyQueueChanged?.Invoke(unit);
+
             unit.IsBusy = true;
         }
 
@@ -119,13 +122,19 @@ namespace Mandragora.Commands
             {
                 CommandsQueue = new Dictionary<Unit, Queue<BaseCommand>>();
             }
+
+            OnAnyQueueChanged?.Invoke(GameSession.Instance.UnitActionSystem.SelectedUnit);
         }
 
         public static void StashUnitCommandLines(Unit unit)
         {
             if (!CommandsQueue.TryGetValue(unit, out var commandQueue)) return;
-
-            _preAlertCommandsQueue[unit].Enqueue(CurrentUnitsCommand[unit]);
+            
+            var currentCommand = CurrentUnitsCommand[unit];
+            if (currentCommand != null)
+            {
+                _preAlertCommandsQueue[unit].Enqueue(currentCommand);
+            }
 
             foreach (var command in commandQueue)
             {
@@ -137,7 +146,7 @@ namespace Mandragora.Commands
 
         public static void ReadFromStashUnitCommandLines(Unit unit)
         {
-            if (!_preAlertCommandsQueue.ContainsKey(unit) || _preAlertCommandsQueue[unit].Count == 0) return;
+            if (!_preAlertCommandsQueue.ContainsKey(unit)) return;
             var commandQueue = _preAlertCommandsQueue[unit];
             CommandsQueue.Add(unit, new Queue<BaseCommand>(commandQueue));
 
