@@ -18,7 +18,7 @@ namespace Mandragora.UnitBased
             set
             {
                 _isAgentHavePath = value;
-                _unit.SetBoolAnimation(Idents.Animations.Moving, _isAgentHavePath, AnimatorType.Visual);
+                _unit.AnimationComponent.SetBoolAnimation(Idents.Animations.Moving, _isAgentHavePath, AnimatorType.Visual);
             }
         }
 

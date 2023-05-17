@@ -16,13 +16,14 @@ namespace Mandragora.UnitBased
         private RotateComponent _rotateComponent;
         private InteractComponent _interactComponent;
         private QueueComponent _queueComponent;
+        private AnimationComponent _animationComponent;
         public NavMeshAgent Agent => _agent;
         public MoveComponent MoveComponent => _moveComponent;
         public RotateComponent RotateComponent => _rotateComponent;
         public InteractComponent InteractComponent => _interactComponent;
         public QueueComponent QueueComponent => _queueComponent;
+        public AnimationComponent AnimationComponent => _animationComponent;
         public bool IsBusy { get; set; }
-        public event Action OnUnitAnimationComplete;
 
         private void Awake()
         {
@@ -31,28 +32,17 @@ namespace Mandragora.UnitBased
             _queueComponent = new QueueComponent(this);
             _rotateComponent = new RotateComponent(this, _rotateSpeed);
             _moveComponent = new MoveComponent(this);
+            _animationComponent = new AnimationComponent(_manipulatorAnimator, _visualAnimator);
         }
 
         private void Update()
         {
             _moveComponent.CheckAgentDestination();
         }
-
-        public void TriggerAnimation(string animationTriggerParameter, AnimatorType animatorType)
-        {
-            if (animatorType == AnimatorType.Manipulator) _manipulatorAnimator.SetTrigger(animationTriggerParameter);
-            else _visualAnimator.SetTrigger(animationTriggerParameter);
-        }
-
-        public void SetBoolAnimation(string animationBoolParameter, bool state, AnimatorType animatorType)
-        {
-            if (animatorType == AnimatorType.Manipulator) _visualAnimator.SetBool(animationBoolParameter, state);
-            else _visualAnimator.SetBool(animationBoolParameter, state);
-        }
-
+        
         private void AnimationComplete()
         {
-            OnUnitAnimationComplete?.Invoke();
+            _animationComponent.AnimationComplete();
         }
     }
 

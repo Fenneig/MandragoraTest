@@ -17,7 +17,7 @@ namespace Mandragora.Environment.Interactables
         {
             CurrentUnitInteractWith = UnitsInQueue.Dequeue();
             QueueCommand.OnAnyCommandQueueChanged?.Invoke(UnitsInQueue, QueueId);
-            CurrentUnitInteractWith.TriggerAnimation(Idents.Animations.TakeCargo, AnimatorType.Manipulator);
+            CurrentUnitInteractWith.AnimationComponent.TriggerAnimation(Idents.Animations.TakeCargo, AnimatorType.Manipulator);
             base.OnInteractionComplete();
         }
     }

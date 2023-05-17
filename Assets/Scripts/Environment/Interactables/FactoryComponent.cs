@@ -12,14 +12,14 @@ namespace Mandragora.Environment.Interactables
         {
             CurrentUnitInteractWith = UnitsInQueue.Dequeue();
             QueueCommand.OnAnyCommandQueueChanged?.Invoke(UnitsInQueue, QueueId);
-            CurrentUnitInteractWith.OnUnitAnimationComplete += StartFactoryAnimation;
-            CurrentUnitInteractWith.TriggerAnimation(Idents.Animations.DeliverCargo, AnimatorType.Manipulator);
+            CurrentUnitInteractWith.AnimationComponent.OnUnitAnimationComplete += StartFactoryAnimation;
+            CurrentUnitInteractWith.AnimationComponent.TriggerAnimation(Idents.Animations.DeliverCargo, AnimatorType.Manipulator);
         }
 
         private void StartFactoryAnimation()
         {
             _animator.SetTrigger(Idents.Animations.Interact);
-            CurrentUnitInteractWith.OnUnitAnimationComplete -= StartFactoryAnimation;
+            CurrentUnitInteractWith.AnimationComponent.OnUnitAnimationComplete -= StartFactoryAnimation;
         }
     }
 }
