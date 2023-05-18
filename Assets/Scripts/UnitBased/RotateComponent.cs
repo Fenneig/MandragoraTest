@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using Mandragora.Commands;
+using Mandragora.Utils;
 using UnityEngine;
 
 namespace Mandragora.UnitBased
@@ -29,7 +30,7 @@ namespace Mandragora.UnitBased
         
         public void LookAt(Vector3 direction)
         {
-            _unit.StartCoroutine(LookRoutine(direction));
+            Coroutines.StartRoutine(LookRoutine(direction));
         }
 
         private IEnumerator LookRoutine(Vector3 direction)

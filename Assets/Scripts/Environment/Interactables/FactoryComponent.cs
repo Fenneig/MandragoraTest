@@ -15,6 +15,7 @@ namespace Mandragora.Environment.Interactables
                 base.OnInteractionComplete();
                 return;
             }
+            base.Interact();
             CurrentUnitInteractWith = UnitsInQueue.Dequeue();
             QueueCommand.OnAnyCommandQueueChanged?.Invoke(UnitsInQueue, QueueId);
             CurrentUnitInteractWith.AnimationComponent.OnUnitAnimationComplete += StartFactoryAnimation;

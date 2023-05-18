@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Mandragora.Commands;
+using Mandragora.Systems;
 using Mandragora.UnitBased;
 using UnityEngine;
 
@@ -20,6 +21,9 @@ namespace Mandragora.Environment.Interactables
         protected string QueueId;
 
         public abstract string Name { get; }
+        public bool InteractionInProgress { get; private set; }
+        public Vector3 InteractPosition => _interactPosition.position;
+        public Vector3 InteractLookAtPosition => _interactLookAtPosition.position;
         public event Action<Unit> OnInteractionCompleted;
 
         private void Start()
@@ -30,7 +34,7 @@ namespace Mandragora.Environment.Interactables
 
         private void UpdateQueue(Unit unit)
         {
-            if (!UnitsInQueue.Contains(unit)) return;
+            if (!UnitsInQueue.Contains(unit) || GameSession.Instance.IsAlert) return;
 
             UnitsInQueue = new Queue<Unit>(UnitsInQueue.Where(excludedUnit => excludedUnit != unit));
             QueueCommand.OnAnyCommandQueueChanged?.Invoke(UnitsInQueue, QueueId);
@@ -39,17 +43,20 @@ namespace Mandragora.Environment.Interactables
         public void StartInteractSequence(Unit unit, bool isQueuedAction)
         {
             if (UnitsInQueue.Contains(unit) && !isQueuedAction) return;
-            unit.QueueComponent.Enqueue(unit, UnitsInQueue, QueueId, _interactPosition.position, _queueDirection.position, isQueuedAction);
-            unit.RotateComponent.Rotate(_interactLookAtPosition.position, true);
+            unit.QueueComponent.Enqueue(unit, UnitsInQueue, QueueId, InteractPosition, _queueDirection.position, isQueuedAction);
             unit.InteractComponent.Interact(this, true);
             unit.MoveComponent.Move(_exitPosition.position, true);
         }
 
-        public abstract void Interact();
+        public virtual void Interact()
+        {
+            InteractionInProgress = true;
+        }
 
-        public virtual void OnInteractionComplete()
+        protected virtual void OnInteractionComplete()
         {
             OnInteractionCompleted?.Invoke(CurrentUnitInteractWith);
+            InteractionInProgress = false;
         }
 
         private void OnDestroy()

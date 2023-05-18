@@ -11,9 +11,10 @@ namespace Mandragora.Environment.Interactables
         public override void Interact()
         {
             _animator.SetTrigger(Idents.Animations.Interact);
+            base.Interact();
         }
 
-        public override void OnInteractionComplete()
+        protected override void OnInteractionComplete()
         {
             if (UnitsInQueue.Count <= 0)
             {

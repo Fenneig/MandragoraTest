@@ -14,7 +14,7 @@ namespace Mandragora.UnitBased
 
         public void Interact(IInteractable interactable, bool isQueueCommand)
         {
-            var command = new InteractCommand(interactable);
+            var command = new InteractCommand(_unit, interactable);
             if (isQueueCommand) command.AddToQueue(_unit);
             else command.StartNewQueue(_unit);
         }
