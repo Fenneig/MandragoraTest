@@ -1,6 +1,6 @@
 ﻿namespace Mandragora.Services
 {
-    public class IService
+    public interface IService
     {
     }
 }

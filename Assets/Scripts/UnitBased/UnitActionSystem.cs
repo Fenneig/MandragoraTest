@@ -15,7 +15,6 @@ namespace Mandragora.UnitBased
 
         private Camera _camera;
         private Unit _selectedUnit;
-        private bool _isAlertState;
         private AlertService _alertService;
 
         public Unit SelectedUnit
@@ -34,8 +33,6 @@ namespace Mandragora.UnitBased
         {
             _camera = Camera.main;
             _alertService = GameManager.ServiceLocator.Get<AlertService>();
-            
-            _alertService.OnAlertStateChanged += SetOnAlertState;
         }
 
         public void HandleUnitSelection(Vector3 mouseScreenPosition)
@@ -51,7 +48,7 @@ namespace Mandragora.UnitBased
 
         public void HandleCommand(Vector3 mouseScreenPosition)
         {
-            if (SelectedUnit == null || _isAlertState) return;
+            if (SelectedUnit == null || _alertService.IsAlert) return;
             var ray = _camera.ScreenPointToRay(mouseScreenPosition);
            
             if (Physics.Raycast(ray, out RaycastHit interactableHit, float.MaxValue, _interactableLayerMask))
@@ -62,16 +59,6 @@ namespace Mandragora.UnitBased
             
             if (!Physics.Raycast(ray, out RaycastHit groundHit, float.MaxValue, _groundLayerMask)) return;
             SelectedUnit.MoveComponent.Move(groundHit.point, IsAlternativeAction);
-        }
-
-        private void SetOnAlertState(bool state)
-        {
-            _isAlertState = state;
-        }
-
-        private void OnDestroy()
-        {
-            _alertService.OnAlertStateChanged -= SetOnAlertState;
         }
     }
 }
