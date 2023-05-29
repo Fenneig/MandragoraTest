@@ -12,7 +12,7 @@ namespace Mandragora.UnitBased
 
         private void Start()
         {
-            _unitActionSystem = GameSession.Instance.UnitActionSystem;
+            _unitActionSystem = GameManager.ServiceLocator.Get<UnitActionSystem>();
             _unitActionSystem.OnSelectedUnitChanged += UnitActionSystem_OnSelectedUnitChanged;
         }
 

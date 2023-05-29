@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Mandragora.Services;
 using Mandragora.Systems;
+using Mandragora.UnitBased;
 using Unit = Mandragora.UnitBased.Unit;
 
 namespace Mandragora.Commands
@@ -12,20 +13,20 @@ namespace Mandragora.Commands
         public Dictionary<Unit, Queue<BaseCommand>> CommandsQueue { get; private set; }
         public Dictionary<Unit, Queue<BaseCommand>> PreAlertCommandsQueue { get; private set; }
 
-        public AlertService AlertService { get; }
+        private AlertService _alertService;
 
         public CommandService(AlertService alertService)
         {
             CurrentUnitsCommand = new Dictionary<Unit, BaseCommand>();
             CommandsQueue = new Dictionary<Unit, Queue<BaseCommand>>();
             PreAlertCommandsQueue = new Dictionary<Unit, Queue<BaseCommand>>();
-            AlertService = alertService;
+            _alertService = alertService;
             alertService.OnAlertStateChanged += SetAlertState;
         }
 
         ~CommandService()
         {
-            AlertService.OnAlertStateChanged -= SetAlertState;
+            _alertService.OnAlertStateChanged -= SetAlertState;
         }
         
         public Action<Unit> OnAnyActionCanceled;
@@ -34,7 +35,7 @@ namespace Mandragora.Commands
         public string GetUnitCommandLines(Unit unit)
         {
             string resultString = "";
-            if (AlertService.IsAlert) return "Hide in hangar!";
+            if (_alertService.IsAlert) return "Hide in hangar!";
             if (CurrentUnitsCommand.TryGetValue(unit, out var currentCommand))
             {
                 resultString += currentCommand + "\r\n";
@@ -68,7 +69,7 @@ namespace Mandragora.Commands
                 CommandsQueue = new Dictionary<Unit, Queue<BaseCommand>>();
             }
 
-            OnAnyQueueChanged?.Invoke(GameSession.Instance.UnitActionSystem.SelectedUnit);
+            OnAnyQueueChanged?.Invoke(GameManager.ServiceLocator.Get<UnitActionSystem>().SelectedUnit);
         }
 
         public void StashUnitCommandLines(Unit unit)

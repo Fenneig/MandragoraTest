@@ -14,7 +14,7 @@ namespace Mandragora.Input
 
         private void Start()
         {
-            _unitActionSystem = GameSession.Instance.UnitActionSystem;
+            _unitActionSystem = GameManager.ServiceLocator.Get<UnitActionSystem>();
         }
 
         public void OnCameraMovement(InputAction.CallbackContext context) =>

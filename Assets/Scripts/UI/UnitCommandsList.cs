@@ -15,12 +15,19 @@ namespace Mandragora.UI
         private UnitActionSystem _unitActionSystem;
         private CommandService _commandService;
 
-        private void Start()
+        private void Awake()
         {
             _commandsList = new List<CommandWidget>();
+
+            RegisterServices();
+        }
+
+        private void RegisterServices()
+        {
             _commandService = GameManager.ServiceLocator.Get<CommandService>();
             _commandService.OnAnyQueueChanged += CheckIsNeedToUpdateUI;
-            _unitActionSystem = GameSession.Instance.UnitActionSystem;
+
+            _unitActionSystem = GameManager.ServiceLocator.Get<UnitActionSystem>();
             _unitActionSystem.OnSelectedUnitChanged += UpdateUIList;
         }
 

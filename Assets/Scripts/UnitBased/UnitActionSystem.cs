@@ -1,14 +1,13 @@
 ﻿using System;
 using Mandragora.Environment.Interactables;
+using Mandragora.Services;
 using Mandragora.Systems;
 using UnityEngine;
 
 namespace Mandragora.UnitBased
 {
-    public class UnitActionSystem : MonoBehaviour
+    public class UnitActionSystem : MonoBehaviour, IService
     {
-        public event Action OnSelectedUnitChanged;
-        
         [SerializeField] private LayerMask _unitLayerMask;
         [SerializeField] private LayerMask _groundLayerMask;
         [SerializeField] private LayerMask _interactableLayerMask;
@@ -28,12 +27,24 @@ namespace Mandragora.UnitBased
         }
         
         public bool IsAlternativeAction { get; set; }
+        
+        public event Action OnSelectedUnitChanged;
 
-        private void Start()
+        #region Monobehaviour
+        private void Awake()
         {
             _camera = Camera.main;
             _alertService = GameManager.ServiceLocator.Get<AlertService>();
+            GameManager.ServiceLocator.Register(this);
         }
+
+        private void OnDestroy()
+        {
+            GameManager.ServiceLocator.UnRegister(this);
+        }
+        #endregion
+
+        #region GameplayHandlers
 
         public void HandleUnitSelection(Vector3 mouseScreenPosition)
         {
@@ -60,5 +71,7 @@ namespace Mandragora.UnitBased
             if (!Physics.Raycast(ray, out RaycastHit groundHit, float.MaxValue, _groundLayerMask)) return;
             SelectedUnit.MoveComponent.Move(groundHit.point, IsAlternativeAction);
         }
+
+        #endregion
     }
 }

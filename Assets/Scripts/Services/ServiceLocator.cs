@@ -5,7 +5,7 @@ namespace Mandragora.Services
 {
     public class ServiceLocator<T> : IServiceLocator<T>
     {
-        protected Dictionary<Type, T> ItemsMap { get; }
+        private Dictionary<Type, T> ItemsMap { get; }
 
         public ServiceLocator()
         {
@@ -42,6 +42,12 @@ namespace Mandragora.Services
             }
 
             return (TP) ItemsMap[type];
+        }
+
+        public bool Has<TP>() where TP : T
+        {
+            var type = typeof(TP);
+            return ItemsMap.ContainsKey(type);
         }
     }
 }
