@@ -13,6 +13,7 @@
 
         public static class Scenes
         {
+            public static string GameScene = "GameScene";
             public static string HudScene = "HUDScene";
         }
     }

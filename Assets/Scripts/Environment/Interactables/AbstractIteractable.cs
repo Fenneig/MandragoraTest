@@ -19,6 +19,7 @@ namespace Mandragora.Environment.Interactables
         protected Queue<Unit> UnitsInQueue = new Queue<Unit>();
         protected Unit CurrentUnitInteractWith;
         protected string QueueId;
+        private AlertService _alertService;
 
         public abstract string Name { get; }
         public bool InteractionInProgress { get; private set; }
@@ -26,15 +27,25 @@ namespace Mandragora.Environment.Interactables
         public Vector3 InteractLookAtPosition => _interactLookAtPosition.position;
         public event Action<Unit> OnInteractionCompleted;
 
+        private CommandService _commandService;
+
         private void Start()
         {
-            BaseCommand.OnAnyActionCanceled += UpdateQueue;
+            GatherServices();
+            
+            _commandService.OnAnyActionCanceled += UpdateQueue;
             QueueId = Name + "_Id";
+        }
+
+        private void GatherServices()
+        {
+            _commandService = GameManager.ServiceLocator.Get<CommandService>();
+            _alertService = GameManager.ServiceLocator.Get<AlertService>();
         }
 
         private void UpdateQueue(Unit unit)
         {
-            if (!UnitsInQueue.Contains(unit) || GameSession.Instance.IsAlert) return;
+            if (!UnitsInQueue.Contains(unit) || _alertService.IsAlert) return;
 
             UnitsInQueue = new Queue<Unit>(UnitsInQueue.Where(excludedUnit => excludedUnit != unit));
             QueueCommand.OnAnyCommandQueueChanged?.Invoke(UnitsInQueue, QueueId);
@@ -61,7 +72,7 @@ namespace Mandragora.Environment.Interactables
 
         private void OnDestroy()
         {
-            BaseCommand.OnAnyActionCanceled -= UpdateQueue;
+            _commandService.OnAnyActionCanceled -= UpdateQueue;
         }
     }
 }

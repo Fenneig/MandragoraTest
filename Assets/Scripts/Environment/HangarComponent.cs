@@ -1,4 +1,5 @@
 using Mandragora.Commands;
+using Mandragora.Systems;
 using Mandragora.UnitBased;
 using Mandragora.Utils;
 using UnityEngine;
@@ -15,10 +16,20 @@ namespace Mandragora.Environment
         private bool _isGateClosed;
         private bool _isAlert;
         private bool _isUnitInSafePosition;
+        private AlertService _alertService;
+        private CommandService _commandService;
 
         private void Start()
         {
+            GetServices();
             _linkedUnit.MoveComponent.OnNavMeshReachDestination += UnitReachSafePosition;
+            _alertService.OnAlertStateChanged += SetAlertState;
+        }
+
+        private void GetServices()
+        {
+            _alertService = GameManager.ServiceLocator.Get<AlertService>();
+            _commandService = GameManager.ServiceLocator.Get<CommandService>();
         }
 
         private void UnitReachSafePosition(Unit unit)
@@ -36,7 +47,7 @@ namespace Mandragora.Environment
         {
             if (_isUnitInSafePosition)
             {
-                BaseCommand.ReadFromStashUnitCommandLines(_linkedUnit);
+                _commandService.ReadFromStashUnitCommandLines(_linkedUnit);
             }
 
             _isGateClosed = false;
@@ -50,10 +61,10 @@ namespace Mandragora.Environment
         public void SetAlertState(bool alertState)
         {
             _isAlert = alertState;
-            
+
             if (_isAlert)
             {
-                BaseCommand.StashUnitCommandLines(_linkedUnit);
+                _commandService.StashUnitCommandLines(_linkedUnit);
                 _linkedUnit.Agent.SetDestination(_unitStayPosition.position);
                 _linkedUnit.MoveComponent.IsAgentHavePath = true;
                 _isUnitInSafePosition = false;
@@ -66,7 +77,7 @@ namespace Mandragora.Environment
                 }
                 else
                 {
-                    BaseCommand.ReadFromStashUnitCommandLines(_linkedUnit);
+                    _commandService.ReadFromStashUnitCommandLines(_linkedUnit);
                 }
             }
         }
@@ -74,6 +85,7 @@ namespace Mandragora.Environment
         private void OnDestroy()
         {
             _linkedUnit.MoveComponent.OnNavMeshReachDestination -= UnitReachSafePosition;
+            _alertService.OnAlertStateChanged -= SetAlertState;
         }
     }
 }

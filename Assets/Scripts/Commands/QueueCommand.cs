@@ -27,11 +27,11 @@ namespace Mandragora.Commands
             _queueDirection = queueDirection - firstInQueuePosition;
             _queueId = queueId;
             OnAnyCommandQueueChanged += UpdateQueue;
-            OnAnyActionCanceled += CheckIsThisCommandCanceled;
+            CommandService.OnAnyActionCanceled += CheckIsThisCommandCanceled;
             _unit.MoveComponent.OnNavMeshReachDestination += AgentReady;
         }
 
-        protected override void StartCommandExecution()
+        public override void StartCommandExecution()
         {
             if (!_unitsQueue.Contains(_unit)) _unitsQueue.Enqueue(_unit);
 
@@ -40,10 +40,10 @@ namespace Mandragora.Commands
 
         private void CheckIsThisCommandCanceled(Unit unit)
         {
-            if (!CurrentUnitsCommand.TryGetValue(unit, out var currentCommand) || currentCommand != this) return;
+            if (!CommandService.CurrentUnitsCommand.TryGetValue(unit, out var currentCommand) || currentCommand != this) return;
             _unit.Agent.SetDestination(_unit.transform.position);
             _unit.MoveComponent.IsAgentHavePath = false;
-            if (GameSession.Instance.IsAlert) return;
+            if (AlertService.IsAlert) return;
             _unitsQueue = new Queue<Unit>(_unitsQueue.Where(excludedUnit => excludedUnit != unit));
             OnAnyCommandQueueChanged?.Invoke(_unitsQueue, _queueId);
             _unit.MoveComponent.OnNavMeshReachDestination -= AgentReady;
@@ -75,14 +75,14 @@ namespace Mandragora.Commands
         private Vector3 GetQueuePosition()
         {
             _queuePosition = _unitsQueue.ToList().IndexOf(_unit);
-            OnAnyQueueChanged?.Invoke(_unit);
+            CommandService.OnAnyQueueChanged?.Invoke(_unit);
             Vector3 position = _firstInQueuePosition + _queueDirection * _queuePosition;
             return position;
         }
 
         protected override void CommandExecutionComplete(Unit unit)
         {
-            if (!CurrentUnitsCommand.TryGetValue(unit, out var currentCommand) || currentCommand != this) return;
+            if (!CommandService.CurrentUnitsCommand.TryGetValue(unit, out var currentCommand) || currentCommand != this) return;
             _unit.MoveComponent.OnNavMeshReachDestination -= AgentReady;
             OnAnyCommandQueueChanged -= UpdateQueue;
             base.CommandExecutionComplete(unit);

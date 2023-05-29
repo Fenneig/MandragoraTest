@@ -1,5 +1,4 @@
 ﻿using Mandragora.Environment.Interactables;
-using Mandragora.Systems;
 using Mandragora.UnitBased;
 
 namespace Mandragora.Commands
@@ -15,6 +14,7 @@ namespace Mandragora.Commands
         {
             _unit = unit;
             _interactable = interactable;
+            
         }
 
         private void StartRotate(Unit unit)
@@ -30,7 +30,7 @@ namespace Mandragora.Commands
             _interactable.Interact();
         }
 
-        protected override void StartCommandExecution()
+        public override void StartCommandExecution()
         {
             if (_isInteractionComplete) base.CommandExecutionComplete(_unit);
             _unitReachInteractPosition = false;
@@ -44,7 +44,7 @@ namespace Mandragora.Commands
             _unit.MoveComponent.OnNavMeshReachDestination += StartRotate;
             _unit.RotateComponent.OnNavMeshRotateReachDirection += StartInteraction;
             _interactable.OnInteractionCompleted += CommandExecutionComplete;
-            OnAnyActionCanceled += ClearMethodsLinks;
+            CommandService.OnAnyActionCanceled += ClearMethodsLinks;
         }
 
         private void ClearMethodsLinks(Unit unit)
@@ -53,13 +53,13 @@ namespace Mandragora.Commands
             _unit.MoveComponent.OnNavMeshReachDestination -= StartRotate;
             _unit.RotateComponent.OnNavMeshRotateReachDirection -= StartInteraction;
             _interactable.OnInteractionCompleted -= CommandExecutionComplete;
-            OnAnyActionCanceled -= ClearMethodsLinks;
+            CommandService.OnAnyActionCanceled -= ClearMethodsLinks;
         }
 
         protected override void CommandExecutionComplete(Unit unit)
         {
-            if (unit != _unit || GameSession.Instance.IsAlert) return;
-            if (!CurrentUnitsCommand.TryGetValue(unit, out var currentCommand) || currentCommand != this) return;
+            if (unit != _unit || AlertService.IsAlert) return;
+            if (!CommandService.CurrentUnitsCommand.TryGetValue(unit, out var currentCommand) || currentCommand != this) return;
             ClearMethodsLinks(unit);
             _isInteractionComplete = true;
             base.CommandExecutionComplete(unit);

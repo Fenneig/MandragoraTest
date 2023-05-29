@@ -11,14 +11,17 @@ namespace Mandragora.UI
     {
         [SerializeField] private CommandWidget _commandPrefab;
 
-        private List<CommandWidget> _commandsList = new List<CommandWidget>();
+        private List<CommandWidget> _commandsList;
         private UnitActionSystem _unitActionSystem;
+        private CommandService _commandService;
 
         private void Start()
         {
+            _commandsList = new List<CommandWidget>();
+            _commandService = GameManager.ServiceLocator.Get<CommandService>();
+            _commandService.OnAnyQueueChanged += CheckIsNeedToUpdateUI;
             _unitActionSystem = GameSession.Instance.UnitActionSystem;
             _unitActionSystem.OnSelectedUnitChanged += UpdateUIList;
-            BaseCommand.OnAnyQueueChanged += CheckIsNeedToUpdateUI;
         }
 
         private void CheckIsNeedToUpdateUI(Unit unit)
@@ -30,20 +33,45 @@ namespace Mandragora.UI
         private void UpdateUIList()
         {
             if (_unitActionSystem.SelectedUnit == null) return;
+           
+            TurnOffAllWidgets();
+            
+            List<string> commandsList = GetCommandsString();
+
+            CreateRequiredWidgets(commandsList);
+
+            FillWidgets(commandsList);
+        }
+
+        private void TurnOffAllWidgets()
+        {
             foreach (var commandGameObject in _commandsList)
             {
                 commandGameObject.gameObject.SetActive(false);
             }
-            var commands = BaseCommand.ToString(_unitActionSystem.SelectedUnit);
-            var commandsString = commands.Split("\r\n").ToList();
-            commandsString = new List<string>(commandsString.Where(commandDescription => !string.IsNullOrEmpty(commandDescription)));
+        }
+
+        private List<string> GetCommandsString()
+        {
+            string commandLines = _commandService.GetUnitCommandLines(_unitActionSystem.SelectedUnit);
+            List<string> commandsList = commandLines.Split("\r\n").ToList();
+            commandsList =
+                new List<string>(commandsList.Where(commandDescription => !string.IsNullOrEmpty(commandDescription)));
             
+            return commandsList;
+        }
+
+        private void CreateRequiredWidgets(List<string> commandsString)
+        {
             for (int i = 0; i < commandsString.Count - _commandsList.Count; i++)
             {
                 var commandUi = Instantiate(_commandPrefab, transform);
                 _commandsList.Add(commandUi);
             }
+        }
 
+        private void FillWidgets(List<string> commandsString)
+        {
             for (int i = 0; i < commandsString.Count; i++)
             {
                 _commandsList[i].gameObject.SetActive(true);
@@ -54,7 +82,7 @@ namespace Mandragora.UI
         private void OnDestroy()
         {
             _unitActionSystem.OnSelectedUnitChanged -= UpdateUIList;
-            BaseCommand.OnAnyQueueChanged -= CheckIsNeedToUpdateUI;
+            _commandService.OnAnyQueueChanged -= CheckIsNeedToUpdateUI;
         }
     }
 }
